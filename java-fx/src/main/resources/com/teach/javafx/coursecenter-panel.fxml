@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterController">
+    <VBox spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+        <!-- 标题 -->
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="课程信息管理系统">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+        </Label>
+
+        <!-- 课程表格 -->
+        <TableView fx:id="courseTable" prefHeight="300">
+            <columns>
+                <TableColumn fx:id="courseIdColumn" prefWidth="80" text="课程号">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="courseId" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="courseNameColumn" prefWidth="150" text="课程名称">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="courseName" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="teacherColumn" prefWidth="100" text="授课教师">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="teacher" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="locationColumn" prefWidth="100" text="授课地点">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="location" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="creditColumn" prefWidth="60" text="学分">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="credit" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="scheduleColumn" prefWidth="120" text="授课时间">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="schedule" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="assessmentTypeColumn" prefWidth="80" text="考察形式">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="assessmentType" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+
+        <!-- 输入表单 -->
+        <GridPane hgap="10" vgap="10">
+            <padding><Insets top="20" /></padding>
+
+            <Label text="课程名称:" />
+            <TextField fx:id="courseNameField" GridPane.columnIndex="1" />
+
+            <Label text="授课教师:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="teacherField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="授课地点:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField fx:id="locationField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+
+            <Label text="学分:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="creditField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="授课时间:" GridPane.columnIndex="2" />
+            <TextField fx:id="scheduleField" GridPane.columnIndex="3" />
+
+            <Label text="考察形式:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="assessmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+
+        <!-- 操作按钮 -->
+        <HBox alignment="CENTER" spacing="20">
+            <Button onAction="#chooseCourseButton" style="-fx-background-color: #18d78b; -fx-text-fill: white;" text="选择课程" />
+            <Button onAction="#addCourseButton" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="添加课程" />
+            <Button onAction="#editCourseButton" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="编辑课程" />
+            <Button onAction="#deleteCourseButton" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="删除课程" />
+        </HBox>
+    </VBox>
+</AnchorPane>

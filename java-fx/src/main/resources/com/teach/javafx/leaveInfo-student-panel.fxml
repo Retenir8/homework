@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.LeaveTableController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="5.0">
+            <children>
+                <FlowPane alignment="TOP_LEFT" prefHeight="40.0" prefWidth="200.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#onAddLeaveClick" text="添加请假" />
+                        <Button mnemonicParsing="false" onAction="#onDeleteLeaveClick" text="删除" />
+                    </children>
+                </FlowPane>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <TableView fx:id="leaveTableView">
+            <columns>
+                <TableColumn fx:id="studentNumColumn" prefWidth="120.0" text="学号" />
+                <TableColumn fx:id="studentNameColumn" prefWidth="90.0" text="姓名" />
+                <TableColumn fx:id="reasonColumn" prefWidth="140.0" text="请假理由" />
+                <TableColumn fx:id="destinationColumn" prefWidth="140.0" text="目的地" />
+                <TableColumn fx:id="phoneColumn" prefWidth="120.0" text="联系方式" />
+                <TableColumn fx:id="backTimeColumn" prefWidth="140.0" text="返校时间" />
+                <TableColumn fx:id="opinionColumn" prefWidth="120.0" text="辅导员意见" />
+                <TableColumn fx:id="backColumn" prefWidth="80.0" text="销假状态" />
+                <TableColumn fx:id="auditStatusColumn" prefWidth="80.0" text="审核状态" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

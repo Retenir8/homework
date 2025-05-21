@@ -1,0 +1,45 @@
+
+security:
+  jwt:
+    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+    expiration-time: 86400000
+server:
+  port: 22223
+spring:
+  application:
+    name: java-server
+  datasource:
+#    url: jdbc:mysql://202.194.14.120:3306/java_db?allowPublicKeyRetrieval=true&useSSL=false
+#    username: java_server
+#    password: JavaServer2025@
+    url: jdbc:mysql://202.194.14.120:3306/java_2_32?allowPublicKeyRetrieval=true&useSSL=false
+    username: java_2_32
+    password: JavaP232@
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 2
+  jpa:
+    hibernate.ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  jmx:
+    enabled:false
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+attach:
+  folder: /teach-2025/
+logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG # 提高 Spring Security 的日志级别
+#      hibernate: DEBUG # 提高 Hibernate/JPA 的日志级别
+#      hibernate.SQL: DEBUG # 显示所有执行的 SQL 语句
+#      # 如果你想看到 SQL 语句中的参数值，将下面的级别设置为 TRACE
+#      hibernate.type.descriptor.sql.BasicBinder: TRACE # 显示 SQL 语句中的参数绑定值
+  config: classpath:loggback.xml
