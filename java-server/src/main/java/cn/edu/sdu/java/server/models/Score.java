@@ -23,7 +23,7 @@ public class Score {
     private Integer scoreId;
 
     @ManyToOne
-    @JoinColumn(name = "personId")
+    @JoinColumn(name = "studentId")
     private Student student;
 
     @ManyToOne

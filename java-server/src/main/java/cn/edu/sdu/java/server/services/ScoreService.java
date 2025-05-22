@@ -71,6 +71,7 @@ public class ScoreService {
         }
         return CommonMethod.getReturnData(dataList);
     }
+
     public DataResponse scoreSave(DataRequest dataRequest) {
         Integer mark = dataRequest.getInteger("mark");
         Integer scoreId = dataRequest.getInteger("scoreId");
@@ -87,6 +88,7 @@ public class ScoreService {
         scoreRepository.save(s);
         return CommonMethod.getReturnMessageOK();
     }
+
     public DataResponse scoreDelete(DataRequest dataRequest) {
         Integer scoreId = dataRequest.getInteger("scoreId");
         Optional<Score> op;
@@ -106,7 +108,9 @@ public class ScoreService {
             System.out.println("❌ 用户未登录！");
             return;
         }
-
+        if (userDetails.getAuthorities().iterator().next().getAuthority() != "STUDENT") {
+            return;
+        }
         String num = userDetails.getUsername(); // ✅ 获取当前登录的用户名
         System.out.println("🔍 当前用户 num: " + num);
 

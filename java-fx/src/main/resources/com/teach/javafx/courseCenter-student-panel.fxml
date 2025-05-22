@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterController">
+    <VBox spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+        <!-- 标题 -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="课程信息管理系统">
+                <padding>
+                    <Insets bottom="10" />
+                </padding>
+            </Label>
+
+            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <TextField fx:id="searchField" promptText="输入课程名称搜索" style="-fx-pref-width: 250px;" />
+                <Button onAction="#onSearchByNameClick" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-padding: 5 15 5 15;" text="搜索" />
+            </HBox>
+        </HBox>
+
+        <!-- 课程表格 -->
+        <TableView fx:id="courseTable" prefHeight="378.0" prefWidth="693.0">
+            <columns>
+                <TableColumn fx:id="courseIdColumn" prefWidth="80" text="课程号">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="courseId" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="courseNameColumn" prefWidth="150" text="课程名称">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="courseName" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="teacherColumn" prefWidth="100" text="授课教师">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="teacher" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="locationColumn" prefWidth="100" text="授课地点">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="location" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="creditColumn" prefWidth="60" text="学分">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="credit" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="scheduleColumn" prefWidth="120" text="授课时间">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="schedule" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="assessmentTypeColumn" prefWidth="80" text="考察形式">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="assessmentType" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+
+        <!-- 操作按钮 -->
+        <HBox alignment="CENTER" prefHeight="41.0" prefWidth="693.0" spacing="30">
+            <Button onAction="#selectCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="选课" />
+        </HBox>
+    </VBox>
+</AnchorPane>

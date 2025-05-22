@@ -2,19 +2,19 @@ package com.teach.javafx.controller;
 
 import com.teach.javafx.MainApplication;
 import com.teach.javafx.controller.base.MessageDialog;
-import com.teach.javafx.request.HttpRequestUtil;
-import com.teach.javafx.request.OptionItem;
 import com.teach.javafx.request.DataRequest;
 import com.teach.javafx.request.DataResponse;
+import com.teach.javafx.request.HttpRequestUtil;
+import com.teach.javafx.request.OptionItem;
 import com.teach.javafx.util.CommonMethod;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,9 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class LeaveTableController {
+public class LeaveInfoTeacherController {
     @FXML
     private TableView<Map> leaveTableView;
     @FXML
@@ -233,35 +232,13 @@ public class LeaveTableController {
             stage.setResizable(false); // 禁止手动调整大小
 
             leaveEditController = fxmlLoader.getController();
-            leaveEditController.setLeaveTableController(this);
+            leaveEditController.setLeaveInfoTeacherController(this);
             leaveEditController.init();
         } catch (IOException e) {
             throw new RuntimeException("加载 leaveInfo-edit-dialog.fxml 失败", e);
         }
     }
 
-
-
-
-    @FXML
-    private void onAddLeaveClick() {
-        try {
-            System.out.println("点击添加请假...");
-            initDialog();
-
-            if (leaveEditController == null) {
-                System.out.println("错误：leaveEditController 未初始化！");
-                return;
-            }
-
-            leaveEditController.showDialog(null);
-            MainApplication.setCanClose(false);
-            stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace(); // 打印真正的错误
-            MessageDialog.showDialog("发生错误：" + e.getMessage());
-        }
-    }
 
 
     @FXML

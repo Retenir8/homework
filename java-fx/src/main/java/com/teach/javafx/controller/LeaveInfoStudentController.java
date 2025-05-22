@@ -2,19 +2,19 @@ package com.teach.javafx.controller;
 
 import com.teach.javafx.MainApplication;
 import com.teach.javafx.controller.base.MessageDialog;
-import com.teach.javafx.request.HttpRequestUtil;
-import com.teach.javafx.request.OptionItem;
 import com.teach.javafx.request.DataRequest;
 import com.teach.javafx.request.DataResponse;
+import com.teach.javafx.request.HttpRequestUtil;
+import com.teach.javafx.request.OptionItem;
 import com.teach.javafx.util.CommonMethod;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,9 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class LeaveTableController {
+public class LeaveInfoStudentController {
     @FXML
     private TableView<Map> leaveTableView;
     @FXML
@@ -84,59 +83,17 @@ public class LeaveTableController {
 //
 //    }
 
-//    @FXML
-//    private void getMyLeaveInfo(){
-//        DataResponse res = HttpRequestUtil.request("/api/leaveInfo/getMyLeaveInfo", new DataRequest());
-//
-//        if (res != null && res.getCode() == 0) {
-//            leaveList = (ArrayList<Map>) res.getData();
-//            setTableViewData();
-//            System.out.println("✅ 获取到请假数据: " + leaveList);
-//        } else {
-//            System.out.println("❌ 查询失败: " + (res != null ? res.getMsg() : "服务器未响应"));
-//        }
-//    }
-
     @FXML
-    private void onQueryLeaveClick() {
-        Integer studentId = 0;
-        DataRequest req = new DataRequest();
-        req.add("studentId", studentId);
-        DataResponse res = HttpRequestUtil.request("/api/leaveInfo/getLeaveRecords", req);
+    private void getMyLeaveInfo(){
+        DataResponse res = HttpRequestUtil.request("/api/leaveInfo/getMyLeaveInfo", new DataRequest());
 
         if (res != null && res.getCode() == 0) {
             leaveList = (ArrayList<Map>) res.getData();
+            setTableViewData();
+            System.out.println("✅ 获取到请假数据: " + leaveList);
+        } else {
+            System.out.println("❌ 查询失败: " + (res != null ? res.getMsg() : "服务器未响应"));
         }
-        setTableViewData();
-        System.out.println("leaveList 数据: " + leaveList);
-    }
-
-    public void onSearchByNameClick() {
-        String searchName = searchNameField.getText().trim();
-        if (searchName.isEmpty()) {
-            MessageDialog.showDialog("请输入姓名后查询！");
-            return;
-        }
-
-        System.out.println("🔍 通过姓名查询请假记录: " + searchName);
-        DataRequest req = new DataRequest();
-        req.add("studentName", searchName);
-        DataResponse res = HttpRequestUtil.request("/api/leaveInfo/getLeaveRecordsByName", req);
-
-        if (res != null && res.getCode() == 0) {
-            leaveList = (ArrayList<Map>) res.getData();
-        }
-        setTableViewData();
-        System.out.println("leaveList 数据: " + leaveList);
-    }
-    public void onSearchByBackClick() {
-        DataRequest req = new DataRequest();
-        DataResponse res = HttpRequestUtil.request("/api/leaveInfo/getLeaveRecordsByBack",req);
-        if (res != null && res.getCode() == 0) {
-            leaveList = (ArrayList<Map>) res.getData();
-        }
-        setTableViewData();
-        System.out.println("leaveList 数据: " + leaveList);
     }
 
 
@@ -204,14 +161,13 @@ public class LeaveTableController {
         }
 
         // **确保 leaveList 不为空**
-        onQueryLeaveClick();
+        getMyLeaveInfo();
         if (leaveList == null || leaveList.isEmpty()) {
             System.out.println("警告: 没有请假记录！");
             leaveList = new ArrayList<>();
         } else {
             System.out.println("成功加载请假记录: " + leaveList);
         }
-        onSearchByBackClick();
     }
 
 
@@ -233,7 +189,7 @@ public class LeaveTableController {
             stage.setResizable(false); // 禁止手动调整大小
 
             leaveEditController = fxmlLoader.getController();
-            leaveEditController.setLeaveTableController(this);
+            leaveEditController.setLeaveInfoStudentController(this);
             leaveEditController.init();
         } catch (IOException e) {
             throw new RuntimeException("加载 leaveInfo-edit-dialog.fxml 失败", e);
@@ -302,16 +258,11 @@ public class LeaveTableController {
 
         // 获取表单数据
         Integer leaveInfoId = CommonMethod.getInteger(data, "leaveInfoId"); // 这里提取 leaveInfoId
-//        Integer studentId = CommonMethod.getInteger(data, "studentId");
-
-//        if (studentId == null) {
-//            MessageDialog.showDialog("没有选中学生，无法提交请假申请！");
-//            return;
-//        }
+        String studentNum = CommonMethod.getString(data, "studentNum");
 
         DataRequest req = new DataRequest();
         req.add("leaveInfoId", leaveInfoId);
-//        req.add("studentId", studentId);
+        req.add("studentNum", studentNum);
         req.add("reason", CommonMethod.getString(data, "reason"));
         req.add("destination", CommonMethod.getString(data, "destination"));
         req.add("phone", CommonMethod.getString(data, "phone"));
@@ -332,63 +283,11 @@ public class LeaveTableController {
 
         // 处理后端返回结果
         if (res != null && res.getCode() == 0) {
-            onQueryLeaveClick(); // 刷新数据
+            getMyLeaveInfo(); // 刷新数据
         } else {
             MessageDialog.showDialog(res.getMsg());
         }
     }
 
-
-    @FXML
-    private void onAuditClick() {
-        Map<String, Object> selectedLeave = leaveTableView.getSelectionModel().getSelectedItem();
-        System.out.println("🔍 选中的审核记录: " + selectedLeave);
-
-        if (selectedLeave == null) {
-            MessageDialog.showDialog("未选中请假记录，无法审核！");
-            return;
-        }
-
-        Integer leaveInfoId = CommonMethod.getInteger(selectedLeave, "leaveInfoId");
-        Integer studentId = CommonMethod.getInteger(selectedLeave, "studentId");
-
-        if (leaveInfoId == null || studentId == null) {
-            System.out.println("❌ 审核模式: leaveInfoId 或 studentId 为空！");
-            MessageDialog.showDialog("审核错误: 请假记录 ID 或学生 ID 为空！");
-            return;
-        }
-        initDialog();
-        leaveEditController.showDialog(selectedLeave);
-
-        MainApplication.setCanClose(false);
-        stage.showAndWait(); // 等待用户操作
-    }
-
-
-
-    @FXML
-    private void onBackClick() {
-        Map<String, Object> selectedLeave = leaveTableView.getSelectionModel().getSelectedItem();
-        System.out.println("🔍 选中的销假记录: " + selectedLeave);
-
-        if (selectedLeave == null) {
-            MessageDialog.showDialog("未选中请假记录，无法销假！");
-            return;
-        }
-
-        Integer leaveInfoId = CommonMethod.getInteger(selectedLeave, "leaveInfoId");
-        Integer studentId = CommonMethod.getInteger(selectedLeave, "studentId");
-
-        if (leaveInfoId == null || studentId == null) {
-            System.out.println("❌ 销假模式: leaveInfoId 或 studentId 为空！");
-            MessageDialog.showDialog("审核错误: 请假记录 ID 或学生 ID 为空！");
-            return;
-        }
-        initDialog();
-        leaveEditController.showDialog(selectedLeave);
-
-        MainApplication.setCanClose(false);
-        stage.showAndWait(); // 等待用户操作
-    }
 
 }

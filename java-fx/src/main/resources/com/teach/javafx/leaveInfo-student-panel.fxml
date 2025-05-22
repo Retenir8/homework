@@ -1,36 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.LeaveTableController">
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.LeaveInfoStudentController"
+            style="-fx-background-color: #6378e8;">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="5.0">
-            <children>
-                <FlowPane alignment="TOP_LEFT" prefHeight="40.0" prefWidth="200.0">
-                    <children>
-                        <Button mnemonicParsing="false" onAction="#onAddLeaveClick" text="添加请假" />
-                        <Button mnemonicParsing="false" onAction="#onDeleteLeaveClick" text="删除" />
-                    </children>
-                </FlowPane>
-            </children>
-        </HBox>
+        <VBox spacing="15" style="-fx-background-color: #eeeff3; -fx-padding: 15;">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="请假管理系统" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <children>
+                    <FlowPane alignment="TOP_LEFT" prefHeight="40.0" prefWidth="200.0">
+                        <children>
+                            <Button text="添加请假" onAction="#onAddLeaveClick" style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 8 15 8 15;"/>
+                            <Button text="删除" onAction="#onDeleteLeaveClick" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 8 15 8 15;"/>
+                        </children>
+                    </FlowPane>
+                </children>
+            </HBox>
+        </VBox>
     </top>
     <center>
-        <TableView fx:id="leaveTableView">
+        <TableView fx:id="leaveTableView" style="-fx-background-color: transparent;">
             <columns>
-                <TableColumn fx:id="studentNumColumn" prefWidth="120.0" text="学号" />
-                <TableColumn fx:id="studentNameColumn" prefWidth="90.0" text="姓名" />
-                <TableColumn fx:id="reasonColumn" prefWidth="140.0" text="请假理由" />
-                <TableColumn fx:id="destinationColumn" prefWidth="140.0" text="目的地" />
-                <TableColumn fx:id="phoneColumn" prefWidth="120.0" text="联系方式" />
-                <TableColumn fx:id="backTimeColumn" prefWidth="140.0" text="返校时间" />
-                <TableColumn fx:id="opinionColumn" prefWidth="120.0" text="辅导员意见" />
-                <TableColumn fx:id="backColumn" prefWidth="80.0" text="销假状态" />
-                <TableColumn fx:id="auditStatusColumn" prefWidth="80.0" text="审核状态" />
+                <TableColumn fx:id="studentNumColumn" text="学号" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="studentNum"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="studentNameColumn" text="姓名" prefWidth="90">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="studentName"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="reasonColumn" text="请假理由" prefWidth="140">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="reason"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="destinationColumn" text="目的地" prefWidth="140">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="destination"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="phoneColumn" text="联系方式" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="phone"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="backTimeColumn" text="返校时间" prefWidth="140">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="backTime"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="opinionColumn" text="辅导员意见" prefWidth="120">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="opinion"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="backColumn" text="销假状态" prefWidth="80">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="backStatus"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="auditStatusColumn" text="审核状态" prefWidth="80">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="auditStatus"/>
+                    </cellValueFactory>
+                </TableColumn>
             </columns>
+
+            <!-- 表格样式 -->
+            <style>
+                <![CDATA[
+                    .table-view {
+                        -fx-table-cell-border-color: transparent;
+                    }
+                    .table-view .column-header {
+                        -fx-background-color: #3f51b5;
+                        -fx-text-fill: white;
+                        -fx-font-weight: bold;
+                    }
+                    .table-row-cell:odd {
+                        -fx-background-color: #f9f9f9;
+                    }
+                    .table-row-cell:selected {
+                        -fx-background-color: #bbdefb;
+                    }
+                ]]>
+            </style>
         </TableView>
     </center>
 </BorderPane>

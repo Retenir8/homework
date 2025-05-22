@@ -86,17 +86,19 @@ public class LeaveInfoService {
 
     public DataResponse leaveSave(DataRequest req) {
         System.out.println("收到的请假请求数据: " + req);
-
-        Integer studentId = req.getInteger("studentId");
-        if (studentId == null) {
+        System.out.println("Num是"+req.getString("studentNum"));
+        String studentNum = req.getString("studentNum");
+        if(!studentRepository.findByStudentNum(studentNum).isPresent()){
             return CommonMethod.getReturnMessageError("没有选中学生，无法提交请假申请！");
         }
 
+        System.out.println(req);
         LeaveInfo leaveInfo = new LeaveInfo();
-        leaveInfo.setLeaveInfoId(req.getInteger("leaveInfoId"));
-        leaveInfo.setStudent(studentRepository.findById(studentId).orElse(null));
-        leaveInfo.setStudentNum(Objects.requireNonNull(studentRepository.findById(studentId).orElse(null)).getPerson().getNum());
-        leaveInfo.setStudentName(Objects.requireNonNull(studentRepository.findById(studentId).orElse(null)).getPerson().getName());
+        leaveInfo.setStudent(studentRepository.findByStudentNum(studentNum).orElse(null));
+        System.out.println(leaveInfo);
+        leaveInfo.setStudentNum(req.getString("studentNum"));
+        leaveInfo.setStudentName((studentRepository.findByStudentNum(studentNum).orElse(null)).getPerson().getName());
+        System.out.println(leaveInfo);
         leaveInfo.setReason(req.getString("reason"));
         leaveInfo.setDestination(req.getString("destination"));
         leaveInfo.setPhone(req.getString("phone"));

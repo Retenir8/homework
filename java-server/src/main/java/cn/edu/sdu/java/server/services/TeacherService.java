@@ -7,7 +7,6 @@ import cn.edu.sdu.java.server.payload.response.OptionItem;
 import cn.edu.sdu.java.server.repositorys.*;
 import cn.edu.sdu.java.server.util.ComDataUtil;
 import cn.edu.sdu.java.server.util.CommonMethod;
-import cn.edu.sdu.java.server.util.DateTimeTool;
 import jakarta.transaction.Transactional;
 import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
@@ -78,9 +77,6 @@ public class TeacherService {
         System.out.println("返回的学生选项: " + teacherOptions);
         return teacherOptions;
     }
-
-
-
 
 
     public Map<String,Object> getMapFromTeacher(Teacher s) {
