@@ -141,14 +141,18 @@ public class BaseService {
     public DataResponse getMenuList(DataRequest dataRequest) {
         List<Map<String, Object>> dataList = new ArrayList<>();
         Integer userTypeId = dataRequest.getInteger("userTypeId");
+        System.out.println(userTypeId);
         if (userTypeId == null) {
             Integer personId = CommonMethod.getPersonId();
+            System.out.println(personId);
             if (personId == null)
                 return CommonMethod.getReturnData(dataList);
             userTypeId = userRepository.findById(personId).get().getUserType().getId();
+            System.out.println(userTypeId);
         }
+        System.out.println(userTypeId);
         List<MenuInfo> mList = menuInfoRepository.findByUserTypeIds(userTypeId + "");
-        Map<String, Object> m;
+        Map<String, Object> m = null;
         List<Map<String, Object>> sList;
         for (MenuInfo info : mList) {
             m = new HashMap<>();
@@ -159,6 +163,7 @@ public class BaseService {
             m.put("sList", sList);
             dataList.add(m);
         }
+        System.out.println(m);
         return CommonMethod.getReturnData(dataList);
     }
 

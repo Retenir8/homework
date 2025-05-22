@@ -48,7 +48,7 @@ public class LeaveInfoStudentController {
 
     private ArrayList<Map> leaveList = new ArrayList<>();
     private ObservableList<Map> observableList = FXCollections.observableArrayList();
-    private String UserRole = "";
+
     @FXML
     private TextField searchNameField;
     private List<OptionItem> studentList;
@@ -168,6 +168,7 @@ public class LeaveInfoStudentController {
         } else {
             System.out.println("成功加载请假记录: " + leaveList);
         }
+        getMyLeaveInfo();
     }
 
 

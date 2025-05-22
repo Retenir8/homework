@@ -164,14 +164,31 @@ public class MainFrameController {
     @FXML
     public void initialize() {
         handler =new ChangePanelHandler();
-        DataResponse res = HttpRequestUtil.request("/api/base/getMenuList",new DataRequest());
-        List<Map> mList = (List<Map>)res.getData();
-        initMenuBar(mList);
-        initMenuTree(mList);
+        // 发送请求获取菜单列表
+        DataResponse res = HttpRequestUtil.request("/api/base/getMenuList", new DataRequest());
+
+        // 关键的安全检查：确保 res 不为 null 且请求成功（通常 code 为 0 表示成功）
+        if (res != null && res.getCode() == 0) {
+            // 请求成功且返回的数据不为 null
+            List<Map> mList = (List<Map>)res.getData();
+            if (mList != null) {
+                // 初始化菜单栏和菜单树
+                initMenuBar(mList);
+                initMenuTree(mList);
+            } else {
+                // 后端返回的 DataResponse.data 字段为 null，说明可能没有菜单数据
+                System.err.println("警告: /api/base/getMenuList 返回的数据列表为 null。");
+            }
+        } else {
+            // 请求失败（res 为 null 或 res.code 不为 0）
+            String errorMessage = "加载菜单失败: " + (res != null ? res.getMsg() : "未知错误 (HttpRequestUtil 返回了 null)");
+            System.err.println(errorMessage);
+            // 弹出错误提示给用户
+        }
+
+        // 设置 TabPane 的关闭策略和样式
         contentTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
-        contentTabPane.setStyle("-fx-background-image: url('shanda1.jpg'); -fx-background-repeat: no-repeat; -fx-background-size: cover;");  //inline选择器
-
-
+        contentTabPane.setStyle("-fx-background-image: url('shanda1.jpg'); -fx-background-repeat: no-repeat; -fx-background-size: cover;");
     }
 
 
