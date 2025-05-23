@@ -19,6 +19,7 @@ public interface CourseCenterRepository extends JpaRepository<Courses,String> {
     // List<CourseCenter> findByTeacher(String teacher);
     // List<CourseCenter> findByCreditGreaterThan(int credit);
     Optional<Courses> findByCourseId(Integer courseId);
+    List<Courses> findByCourseNameContainingIgnoreCase(String courseName);
 
 }
 

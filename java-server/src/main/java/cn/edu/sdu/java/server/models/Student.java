@@ -19,7 +19,9 @@ import lombok.Setter;
 import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,19 +38,16 @@ public class Student {
     @JoinColumn(name="person_id")
     private Person person;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "student_course",
-//            joinColumns = @JoinColumn(name = "student_id"),
-//            inverseJoinColumns = @JoinColumn(name = "course_id")
-//    )
-//    private List<Course> courses = new ArrayList<>();
-
     @Size(max = 20)
     private String major;
 
     @Size(max = 50)
     private String className;
+
+    // 多对多关联：一个学生可以选修多门课程
+    @Setter
+    @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
+    private Set<Courses> courses = new HashSet<>();
 
 }
 //$2a$10$IgSRtR/lS/iHFfH5rh6fUuXKobn/j.caegD2JJQ4vdJggCWuzppDS

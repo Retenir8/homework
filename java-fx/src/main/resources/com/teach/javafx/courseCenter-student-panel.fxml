@@ -5,7 +5,7 @@
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterController">
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterStudentController">
     <VBox spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
         <!-- 标题 -->
         <HBox alignment="CENTER_LEFT" spacing="10">
@@ -64,7 +64,7 @@
 
         <!-- 操作按钮 -->
         <HBox alignment="CENTER" prefHeight="41.0" prefWidth="693.0" spacing="30">
-            <Button onAction="#selectCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="选课" />
+            <Button onAction="#onSelectCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="选课" />
         </HBox>
     </VBox>
 </AnchorPane>

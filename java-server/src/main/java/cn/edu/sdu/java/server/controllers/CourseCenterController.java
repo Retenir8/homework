@@ -1,6 +1,8 @@
 package cn.edu.sdu.java.server.controllers;
 import ch.qos.logback.classic.Logger;
 import cn.edu.sdu.java.server.models.Courses;
+import cn.edu.sdu.java.server.repositorys.CourseCenterRepository;
+import cn.edu.sdu.java.server.repositorys.TeacherRepository;
 import cn.edu.sdu.java.server.services.CourseCenterService;
 import cn.edu.sdu.java.server.payload.request.DataRequest;
 import cn.edu.sdu.java.server.payload.response.DataResponse;
@@ -16,7 +18,12 @@ import java.util.*;
 public class CourseCenterController {
     @Autowired
     private CourseCenterService courseCenterService;
-    //public CourseCenterController(CourseCenterService courseCenterService) {this.courseCenterService = courseCenterService;}
+    @Autowired
+    private CourseCenterRepository courseCenterRepository;
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+    public CourseCenterController(CourseCenterService courseCenterService) {this.courseCenterService = courseCenterService;}
 
 
     @PostMapping("/getCoursesList")
@@ -30,34 +37,47 @@ public class CourseCenterController {
     public DataResponse createCourse(@RequestBody DataRequest req) {
 
         System.out.println("收到请求数据: " + req.getData());
-
+//        String name = req.getString("teacherName");
+//        String num = req.getString("teacherNum");
+//        if(teacherRepository.findByPersonNum(num) != null || teacherRepository.findByPersonName(name) != null || teacherRepository.findByPersonNum(num)!=teacherRepository.findByPersonName(name)) {
+//            return DataResponse.error(0,"教工号与教师不匹配");
+//        }
         Courses course = new Courses();
         course.setCourseName(req.getString("courseName"));
-        course.setTeacher(req.getString("teacher"));
+        course.setTeacher(teacherRepository.findByPersonNum(req.getString("teacherNum")));
+        course.setTeacherName(req.getString("teacherName"));
         course.setLocation(req.getString("location"));
         course.setCredit(req.getInteger("credit"));
         course.setSchedule(req.getString("schedule"));
         course.setAssessmentType(req.getString("assessmentType"));
-
+        System.out.println(course);
         Courses courses = courseCenterService.saveCourse(course);
+        System.out.println("保存成功"+courses);
         return DataResponse.success(courses);
     }
 
     // 更新课程
     @PostMapping("/update")
     public DataResponse updateCourse(@RequestBody DataRequest req) {
-        Integer id = req.getInteger("id");
-        Courses existing = courseCenterService.getCourseById(id);
+        Integer courseId = req.getInteger("courseId");
+        Courses existing = courseCenterService.getCourseById(courseId);
+//        String name = req.getString("teacherName");
+//        String num = req.getString("teacherNum");
+//        if(teacherRepository.findByPersonNum(num) != null || teacherRepository.findByPersonName(name) != null || teacherRepository.findByPersonNum(num)!=teacherRepository.findByPersonName(name)) {
+//            return DataResponse.error(0,"教工号与教师不匹配");
+//        }
         if(existing != null) {
-            existing.setCourseId(req.getInteger("CourseId"));
+
             existing.setCourseName(req.getString("courseName"));
-            existing.setTeacher(req.getString("teacher"));
+            existing.setTeacher(teacherRepository.findByPersonNum(req.getString("teacherNum")));
+            existing.setTeacherName(req.getString("teacherName"));
             existing.setLocation(req.getString("location"));
             existing.setCredit(req.getInteger("credit"));
             existing.setSchedule(req.getString("schedule"));
             existing.setAssessmentType(req.getString("assessmentType"));
-
+            System.out.println("保存成功");
             return DataResponse.success(courseCenterService.saveCourse(existing));
+
         }
         return DataResponse.error("课程不存在");
     }
@@ -68,12 +88,17 @@ public class CourseCenterController {
 
         return courseCenterService.deleteCourse(req);
     }
-//选课
+    //选课
     @PostMapping("/choose")
     public DataResponse chooseCourse(@RequestBody DataRequest req) {
 
         return courseCenterService.chooseCourse(req);
     }
 
+    @PostMapping("/searchCourses")
+    public DataResponse searchCourses(@RequestBody DataRequest req) {
+
+        return courseCenterService.searchCourses(req);
+    }
 }
 
