@@ -103,5 +103,20 @@ public class CourseCenterController {
 
         return courseCenterService.getMyCourses(req);
     }
+
+    @PostMapping("/updateTimeSlots")
+    public DataResponse updateTimeSlots(@RequestBody DataRequest request) {
+        Integer courseId = request.getInteger("courseId");
+        String timeSlots = request.getString("timeSlots");
+        if (courseId == null || timeSlots == null) {
+            return DataResponse.error("缺少必要参数");
+        }
+        try {
+            courseCenterService.updateTimeSlots(courseId, timeSlots);
+            return DataResponse.success("课程时间位置信息更新成功");
+        } catch (Exception e) {
+            return DataResponse.error("更新失败: " + e.getMessage());
+        }
+    }
 }
 

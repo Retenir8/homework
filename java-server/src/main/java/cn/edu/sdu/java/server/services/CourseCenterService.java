@@ -141,8 +141,36 @@ public class CourseCenterService {
         List<Course> courseList = new ArrayList<>(courses);
 
         // 返回查询到的课程数据
+        System.out.println(courseList);
         return CommonMethod.getReturnData(courseList);
     }
+
+    public void updateTimeSlots(Integer courseId, String timeSlots) {
+        if (timeSlots == null || timeSlots.length() != 35) {
+            throw new IllegalArgumentException("timeSlots 参数必须为 35 位字符串");
+        }
+        Optional<Course> opt = courseCenterRepository.findByCourseId(courseId);
+        if (!opt.isPresent()) {
+            throw new RuntimeException("课程不存在，courseId = " + courseId);
+        }
+        Course course = opt.get();
+
+        try {
+            // 遍历1到35，动态设置 Course 实体中的 c1 ~ c35 字段
+            for (int i = 1; i <= 35; i++) {
+                String fieldName = "c" + i;
+                java.lang.reflect.Field field = Course.class.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                // 将对应位置的字符转换成字符串后设置字段值
+                field.set(course, String.valueOf(timeSlots.charAt(i - 1)));
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("更新课程时间位置信息失败", e);
+        }
+        course.setTimeSlots(timeSlots);
+        courseCenterRepository.save(course);
+    }
+
 }
 
 

@@ -177,7 +177,7 @@ public class LeaveEditController {
     @FXML
     private void onVerifyStudentClick() {
         String studentNum = null;
-        DataResponse resp = HttpRequestUtil.request("/api/student/getStudentId", new DataRequest());
+        DataResponse resp = HttpRequestUtil.request("/api/student/getMyStudentId", new DataRequest());
         if (resp != null && resp.getCode() == 0) {
             // 将返回的 data 转换为 Map
             Map<String, Object> dataMap = (Map<String, Object>) resp.getData();
@@ -199,6 +199,7 @@ public class LeaveEditController {
         if (res != null && res.getCode() == 0 && res.getData() != null) {
             Map<String, Object> studentData = (Map<String, Object>) res.getData();
             String studentName = (String) studentData.get("name");
+            studentNumField.setText(studentNum);//显示学号
             studentNameLabel.setText(studentName); // 显示姓名
             MessageDialog.showDialog("✅ 学生验证成功：" + studentName);
         } else {

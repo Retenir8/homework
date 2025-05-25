@@ -1,18 +1,26 @@
 package com.teach.javafx.controller;
 
+import com.teach.javafx.MainApplication;
 import com.teach.javafx.controller.base.MessageDialog;
+import com.teach.javafx.request.DataRequest;
+import com.teach.javafx.request.DataResponse;
+import com.teach.javafx.request.HttpRequestUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import java.util.ArrayList;
+import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.control.TableCell;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import com.teach.javafx.request.DataRequest;
-import com.teach.javafx.request.DataResponse;
-import com.teach.javafx.request.HttpRequestUtil;
-import javafx.scene.control.cell.MapValueFactory;
 
 public class CourseCenterController {
 
@@ -33,6 +41,9 @@ public class CourseCenterController {
     private TableColumn<Map, String> scheduleColumn;
     @FXML
     private TableColumn<Map, String> assessmentTypeColumn;
+    // 新增“选时间”列，类型使用 Void 以便自定义单元格
+    @FXML
+    private TableColumn<Map, Void> timeSelectionColumn;
 
     @FXML
     private TextField courseNameField;
@@ -50,6 +61,7 @@ public class CourseCenterController {
     private TextField searchField;
     @FXML
     private TextField teacherNumField;
+
     // 数据源
     private ObservableList<Map> observableList = FXCollections.observableArrayList();
 
@@ -64,13 +76,31 @@ public class CourseCenterController {
         scheduleColumn.setCellValueFactory(new MapValueFactory<>("schedule"));
         assessmentTypeColumn.setCellValueFactory(new MapValueFactory<>("assessmentType"));
 
-        // 初始化下拉框
-        //assessmentTypeCombo.getItems().addAll("考试", "考查", "论文", "实践");
-        //assessmentTypeCombo.getSelectionModel().selectFirst();
-
         // 绑定数据源
         courseTable.setItems(observableList);
 
+        // 设置“选时间”列的 cellFactory，生成带有“选时间”按钮的单元格
+        timeSelectionColumn.setCellFactory(col -> new TableCell<Map, Void>() {
+            private final Button btn = new Button("选时间");
+
+            {
+                btn.setOnAction((ActionEvent event) -> {
+                    Map rowData = getTableView().getItems().get(getIndex());
+                    openTimeSelectionDialog(rowData);
+                });
+                btn.setStyle("-fx-background-color: #FFA726; -fx-text-fill: white;");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btn);
+                }
+            }
+        });
 
         loadCourseData();
     }
@@ -82,14 +112,15 @@ public class CourseCenterController {
 
         if (res != null && res.getCode() == 0) {
             try {
-                // 1. 直接获取原始数据（已经是 List<Map>，无需转换）
+                // 直接获取原始数据（已经是 List<Map<String,Object>>）
                 List<Map<String, Object>> rawData = (List<Map<String, Object>>) res.getData();
                 observableList.setAll(rawData);
-
             } catch (Exception e) {
                 showAlert("数据错误", "加载失败: " + e.getMessage());
                 e.printStackTrace();
             }
+        } else {
+            showAlert("错误", "课程加载失败: " + (res != null ? res.getMsg() : "无响应"));
         }
     }
 
@@ -142,8 +173,6 @@ public class CourseCenterController {
         }
     }
 
-
-
     // 更新课程
     @FXML
     public void editCourseButton() {
@@ -154,23 +183,19 @@ public class CourseCenterController {
             return;
         }
 
-        // 如果输入框为空，说明还没有将选中课程的内容填入表单
-        // 此时自动填充各个输入框，并提示用户修改后再次点击
+        // 如果输入框为空，说明还没有将选中课程填入表单，自动填充
         if (isFormEmpty()) {
             courseNameField.setText(selectedCourse.get("courseName") != null ? selectedCourse.get("courseName").toString() : "");
-            teacherField.setText(selectedCourse.get("teacher") != null ? selectedCourse.get("teacher").toString() : "");
+            teacherField.setText(selectedCourse.get("teacherName") != null ? selectedCourse.get("teacherName").toString() : "");
             locationField.setText(selectedCourse.get("location") != null ? selectedCourse.get("location").toString() : "");
             creditField.setText(selectedCourse.get("credit") != null ? selectedCourse.get("credit").toString() : "");
             scheduleField.setText(selectedCourse.get("schedule") != null ? selectedCourse.get("schedule").toString() : "");
             assessmentTypeField.setText(selectedCourse.get("assessmentType") != null ? selectedCourse.get("assessmentType").toString() : "");
-
             return;
         }
 
-        // 已填充数据（可能已经经过用户修改）后，进行输入验证
         if (validateInput()) {
             DataRequest req = new DataRequest();
-            // 保持原来的 courseId 不变，以便后端识别该记录
             req.add("courseId", selectedCourse.get("courseId"));
             req.add("courseName", courseNameField.getText());
             req.add("teacherNum", teacherNumField.getText());
@@ -183,12 +208,11 @@ public class CourseCenterController {
             DataResponse res = HttpRequestUtil.request("/api/courses/update", req);
 
             if (res != null && res.getCode() == 0) {
-                loadCourseData(); // 重新加载数据
-                clearForm();      // 清空表单
-                showAlert("Success", "Course updated successfully");
+                loadCourseData();
+                clearForm();
+                showAlert("成功", "课程更新成功");
             } else {
-                showAlert("Error", "Failed to update course: "
-                        + (res != null ? res.getMsg() : "No response"));
+                showAlert("错误", "更新课程失败: " + (res != null ? res.getMsg() : "无响应"));
             }
         }
     }
@@ -205,21 +229,22 @@ public class CourseCenterController {
                 && (assessmentTypeField.getText() == null || assessmentTypeField.getText().trim().isEmpty());
     }
 
+
     // 删除课程
     @FXML
     public void deleteCourseButton() {
         Map selected = courseTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             DataRequest req = new DataRequest();
-            req.add("courseId", selected.get("courseId")); // 注意字段名大小写与后端一致
+            req.add("courseId", selected.get("courseId"));
 
             DataResponse res = HttpRequestUtil.request("/api/courses/delete", req);
 
             if (res != null && res.getCode() == 0) {
-                loadCourseData(); // 重新加载数据
+                loadCourseData();
                 showAlert("成功", "课程删除成功");
             } else {
-                showAlert("错误", "删除课程失败: " + (res != null ? res.getMsg() : "无响应"));
+                showAlert("错误", "删除失败: " + (res != null ? res.getMsg() : "无响应"));
             }
         } else {
             showAlert("错误", "请先选择要删除的课程");
@@ -243,10 +268,10 @@ public class CourseCenterController {
             return true;
         } else {
             showAlert("输入错误", errorMessage);
-
             return false;
         }
     }
+
     // 清空表单
     private void clearForm() {
         courseNameField.clear();
@@ -265,6 +290,58 @@ public class CourseCenterController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    /**
+     * 新增：打开时间选择对话框。该方法利用 FXMLLoader 加载时间选择对话框 FXML，
+     * 获取 CourseTimeSelectionController，并将当前课程数据中存储时间位置信息（"timeSlots"）传入，
+     * 用户选择确认后，更新当前课程行的 "timeSlots" 字段，并同步到后端。
+     */
+    private void openTimeSelectionDialog(Map courseData) {
+        try {
+            // 使用绝对路径加载 FXML 文件，确保文件能被找到
+            FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("course-time-selection-dialog.fxml"));
+            Parent page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("选课时间设置");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(MainApplication.getMainStage());
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // 获取对话框的控制器并传入当前课程的时间位置信息
+            CourseTimeSelectionController controller = loader.getController();
+            // 获取当前课程已保存的“timeSlots”。若不存在，则默认全"0"
+            String timeSlots = courseData.get("timeSlots") == null
+                    ? "00000000000000000000000000000000000"
+                    : courseData.get("timeSlots").toString();
+            controller.setTimeSlots(timeSlots);
+            controller.setDialogStage(dialogStage);
+
+            // 显示对话框
+            dialogStage.showAndWait();
+
+            if (controller.isOkClicked()) {
+                String selectedTimeSlots = controller.getTimeSlots();
+                // 更新当前课程记录
+                courseData.put("timeSlots", selectedTimeSlots);
+                // 此处你可能想更新课程表显示（例如 "schedule" 字段），根据实际需求设置
+                courseTable.refresh();
+
+                // 同步更新到后端
+                DataRequest reqUpdate = new DataRequest();
+                reqUpdate.add("courseId", courseData.get("courseId"));
+                reqUpdate.add("timeSlots", selectedTimeSlots);
+                DataResponse resUpdate = HttpRequestUtil.request("/api/courses/updateTimeSlots", reqUpdate);
+                if (resUpdate == null || resUpdate.getCode() != 0) {
+                    showAlert("错误", "保存时间选择失败: " + (resUpdate != null ? resUpdate.getMsg() : "无响应"));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("错误", "加载时间选择对话框失败: " + e.getMessage());
+        }
+    }
+
 
 
     @FXML

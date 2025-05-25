@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScheduleController {
@@ -61,25 +62,71 @@ public class ScheduleController {
      * 根据 scheduleData 更新界面 GridPane 中各单元格的显示（如根据 fx:id 查找按钮并设置 text）
      */
     private void updateGrid() {
-        // 示例：假设每个按钮的 fx:id 格式为 "cell_X_Y",
-        // 可根据 mapping 计算出 key = "c" + ((day-1)*5 + period)
-        // 此处建议遍历所有可能的 period (1~5) 与 day (1~7)
-        // 并用 timetableGrid.lookup("#cell_" + period + "_" + day) 查找按钮，然后设置其文本
-        // 以下仅为示例伪代码，具体实现需根据项目需求完善：
+        // 调用后端接口获取当前学生所有选课记录
+        DataRequest req = new DataRequest();
+        req.add("studentId", studentId);
+        DataResponse res = HttpRequestUtil.request("/api/courses/getMyCourses", req);
 
-        for (int day = 1; day <= 7; day++) {
-            for (int period = 1; period <= 5; period++) {
+        // 构建一个 gridMap，用于存储35个时段的显示内容，默认显示 "-" 表示未安排课程
+        Map<String, String> gridMap = new java.util.HashMap<>();
+        for (int i = 1; i <= 35; i++) {
+            gridMap.put("c" + i, "-");
+        }
+
+        // 如果接口调用成功，则处理返回的课程数据
+        if (res != null && res.getCode() == 0) {
+            try {
+                // 假设返回的数据为 List<Map<String, Object>>，每个 Map 表示一个 Course 对象的属性，包含字段 c1～c35
+                List<Map<String, Object>> courseList = (List<Map<String, Object>>) res.getData();
+                // 遍历所有课程数据
+                for (Map<String, Object> course : courseList) {
+                    // 获取课程名称和授课地点
+                    String courseName = course.get("courseName") == null ? "" : course.get("courseName").toString();
+                    String location = course.get("location") == null ? "" : course.get("location").toString();
+                    // 组合显示文本，使用换行符分隔，如 "高数\n教学楼101"
+                    String displayText = courseName;
+                    if (!location.isEmpty()) {
+                        displayText += "\n" + location;
+                    }
+                    // 遍历该课程在35个时段中的设置
+                    for (int i = 1; i <= 35; i++) {
+                        String key = "c" + i;
+                        if (course.get(key) != null && course.get(key).toString().equals("1")) {
+                            // 如果该时段默认无安排则直接设置，否则追加显示（以换行符分隔）
+                            if (gridMap.get(key).equals("-")) {
+                                gridMap.put(key, displayText);
+                            } else {
+                                gridMap.put(key, gridMap.get(key) + "\n" + displayText);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("数据转换异常: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("获取用户课程数据失败: " + (res != null ? res.getMsg() : "无响应"));
+        }
+
+        // 遍历 GridPane 的单元格：外层循环行（节次: period 1~5），内层循环列（天: day 1~7）
+        for (int period = 1; period <= 5; period++) {
+            for (int day = 1; day <= 7; day++) {
+                // 根据映射公式计算 index
                 int index = (day - 1) * 5 + period;
                 String key = "c" + index;
+                // 查找 fx:id 格式为 "cell_{period}_{day}" 的按钮
                 Button button = (Button) timetableGrid.lookup("#cell_" + period + "_" + day);
                 if (button != null) {
-                    String text = scheduleData.get(key) == null || scheduleData.get(key).toString().isEmpty()
-                            ? "-" : scheduleData.get(key).toString();
-                    button.setText(text);
+                    button.setText(gridMap.get(key));
                 }
             }
         }
     }
+
+
+
+
 
     /**
      * 点击课表单元格时调用：通过按钮的 fx:id 获取被点击单元格对应的 scheduleData key，

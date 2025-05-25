@@ -67,20 +67,23 @@
                         <PropertyValueFactory property="assessmentType" />
                     </cellValueFactory>
                 </TableColumn>
+                <!-- 新增列: 选时间 -->
+                <TableColumn fx:id="timeSelectionColumn" prefWidth="100" text="选时间" />
             </columns>
         </TableView>
 
         <!-- 输入表单 -->
         <GridPane hgap="10" vgap="10">
-            <padding><Insets top="20" /></padding>
-
+            <padding>
+                <Insets top="20" />
+            </padding>
             <Label text="课程名称:" GridPane.rowIndex="1" />
             <TextField fx:id="courseNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
             <Label text="教工号" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <TextField fx:id="teacherNumField" promptText="输入教工号" GridPane.columnIndex="1" />
-            <Button mnemonicParsing="false" onAction="#onVerifyTeacherClick" text="验证" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-            <TextField fx:id="teacherField" promptText="验证后自动填充" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+            <Button onAction="#onVerifyTeacherClick" text="验证" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <TextField fx:id="teacherField" promptText="验证后自动填充" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
             <Label text="授课地点:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <TextField fx:id="locationField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
@@ -94,18 +97,18 @@
             <Label text="考察形式:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
             <TextField fx:id="assessmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-         <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
         </GridPane>
 
         <!-- 操作按钮 -->

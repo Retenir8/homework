@@ -49,4 +49,5 @@ public class ScheduleController {
         Schedule schedule = scheduleService.updateScheduleCell(studentId, key, value);
         return CommonMethod.getReturnData(schedule);
     }
+
 }
