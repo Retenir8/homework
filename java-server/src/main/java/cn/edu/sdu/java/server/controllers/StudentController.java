@@ -3,10 +3,13 @@ package cn.edu.sdu.java.server.controllers;
 import cn.edu.sdu.java.server.payload.request.DataRequest;
 import cn.edu.sdu.java.server.payload.response.DataResponse;
 import cn.edu.sdu.java.server.services.StudentService;
+import cn.edu.sdu.java.server.services.UserDetailsImpl;
+import cn.edu.sdu.java.server.util.CommonMethod;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -29,6 +32,16 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    @PostMapping ("/getMyStudentId")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
+    public DataResponse getMyStudentId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return CommonMethod.getReturnMessageError("❌ 用户未登录！");
+        }
+        String userName = userDetails.getUsername(); // ✅ 获取当前登录的用户名
+        System.out.println("🔍 当前用户: " + userName);
+        return studentService.getMyStudentId(userName);
+    }
 
     @PostMapping("/getStudentByNum")
     public DataResponse getStudentByNum(@RequestBody DataRequest dataRequest) {
@@ -89,24 +102,6 @@ public class StudentController {
      */
 
 
-//    @PostMapping("/studentEditSave")
-//    public ResponseEntity<DataResponse> studentEditSave(@RequestBody DataRequest dataRequest) {
-//        try {
-//            System.out.println("Received request data: " + dataRequest);
-//            DataResponse response = handleStudentEditSave(dataRequest);
-//            System.out.println("Sending response: " + response);
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("Error processing request: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonMethod.getReturnMessageError("Internal Server Error"));
-//        }
-//    }
-//
-//    private DataResponse handleStudentEditSave(DataRequest dataRequest) {
-//        return studentService.studentEditSave(dataRequest);
-//    }
-
     @PostMapping("/studentEditSave")
     @PreAuthorize(" hasRole('ADMIN')")
     public DataResponse studentEditSave(@Valid @RequestBody DataRequest dataRequest) {
@@ -149,32 +144,32 @@ public class StudentController {
         return studentService.getStudentPageData(dataRequest);
     }
 
-    /*
-        FamilyMember
-     */
-    @PostMapping("/getFamilyMemberList")
-    @PreAuthorize(" hasRole('ADMIN') or  hasRole('STUDENT')")
-    public DataResponse getFamilyMemberList(@Valid @RequestBody DataRequest dataRequest) {
-        return studentService.getFamilyMemberList(dataRequest);
-    }
-
-    @PostMapping("/familyMemberSave")
-    @PreAuthorize(" hasRole('ADMIN') or  hasRole('STUDENT')")
-    public DataResponse familyMemberSave(@Valid @RequestBody DataRequest dataRequest) {
-        return studentService.familyMemberSave(dataRequest);
-    }
-
-    @PostMapping("/familyMemberDelete")
-    @PreAuthorize(" hasRole('ADMIN') or  hasRole('STUDENT')")
-    public DataResponse familyMemberDelete(@Valid @RequestBody DataRequest dataRequest) {
-        return studentService.familyMemberDelete(dataRequest);
-    }
-
-
-    @PostMapping("/importFeeDataWeb")
-    @PreAuthorize("hasRole('STUDENT')")
-    public DataResponse importFeeDataWeb(@RequestParam Map<String,Object> request, @RequestParam("file") MultipartFile file) {
-        return studentService.importFeeDataWeb(request, file);
-    }
+//    /*
+//        FamilyMember
+//     */
+//    @PostMapping("/getFamilyMemberList")
+//    @PreAuthorize(" hasRole('ADMIN') or  hasRole('STUDENT')")
+//    public DataResponse getFamilyMemberList(@Valid @RequestBody DataRequest dataRequest) {
+//        return studentService.getFamilyMemberList(dataRequest);
+//    }
+//
+//    @PostMapping("/familyMemberSave")
+//    @PreAuthorize(" hasRole('ADMIN') or  hasRole('STUDENT')")
+//    public DataResponse familyMemberSave(@Valid @RequestBody DataRequest dataRequest) {
+//        return studentService.familyMemberSave(dataRequest);
+//    }
+//
+//    @PostMapping("/familyMemberDelete")
+//    @PreAuthorize(" hasRole('ADMIN') or  hasRole('STUDENT')")
+//    public DataResponse familyMemberDelete(@Valid @RequestBody DataRequest dataRequest) {
+//        return studentService.familyMemberDelete(dataRequest);
+//    }
+//
+//
+//    @PostMapping("/importFeeDataWeb")
+//    @PreAuthorize("hasRole('STUDENT')")
+//    public DataResponse importFeeDataWeb(@RequestParam Map<String,Object> request, @RequestParam("file") MultipartFile file) {
+//        return studentService.importFeeDataWeb(request, file);
+//    }
 
 }

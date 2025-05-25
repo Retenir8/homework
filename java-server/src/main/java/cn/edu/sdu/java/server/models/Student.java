@@ -1,7 +1,5 @@
 package cn.edu.sdu.java.server.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -16,11 +14,8 @@ import jakarta.validation.constraints.Size;
  */
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -47,7 +42,7 @@ public class Student {
     // 多对多关联：一个学生可以选修多门课程
     @Setter
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
-    private Set<Courses> courses = new HashSet<>();
+    private Set<Course> courses = new HashSet<>();
 
 }
 //$2a$10$IgSRtR/lS/iHFfH5rh6fUuXKobn/j.caegD2JJQ4vdJggCWuzppDS

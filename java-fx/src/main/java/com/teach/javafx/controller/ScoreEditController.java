@@ -43,7 +43,7 @@ public class ScoreEditController {
         OptionItem op = studentComboBox.getSelectionModel().getSelectedItem();
         if (op != null) {
             // 将学生 id 保存到数据里，这里 op.getValue() 为学生的 id
-            data.put("personId", Integer.parseInt(op.getValue()));
+            data.put("studentId", Integer.parseInt(op.getValue()));
         }
 
         op = courseComboBox.getSelectionModel().getSelectedItem();
@@ -88,7 +88,7 @@ public class ScoreEditController {
      * 如果 data 不为 null，则为编辑模式，从 data 中读取学生 id 和课程 id，
      * 根据对应 OptionItem 来显示学生姓名和课程名称，并将 ComboBox 锁定（不可修改）。
      *
-     * @param data 包含成绩记录的 Map 数据，键包括 "scoreId", "personId", "courseId", "mark" 等
+     * @param data 包含成绩记录的 Map 数据，键包括 "scoreId", "studentId", "courseId", "mark" 等
      */
     public void showDialog(Map data) {
         if (data == null) {
@@ -104,7 +104,7 @@ public class ScoreEditController {
             scoreId = CommonMethod.getInteger(data, "scoreId");
 
             // 获取存储的学生 id 和课程 id
-            String studentIdStr = CommonMethod.getString(data, "personId");
+            String studentIdStr = CommonMethod.getString(data, "studentId");
             String courseIdStr = CommonMethod.getString(data, "courseId");
 
             // 根据 id 在列表中查找对应的 OptionItem 下标，确保显示的是学生姓名和课程名称

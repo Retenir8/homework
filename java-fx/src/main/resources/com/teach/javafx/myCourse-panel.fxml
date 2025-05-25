@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.MyCourseController">
+    <children>
+        <TableView fx:id="courseTable" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                   AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+            <columns>
+                <TableColumn fx:id="courseIdColumn" text="课程号" prefWidth="100"/>
+                <TableColumn fx:id="courseNameColumn" text="课程名称" prefWidth="150"/>
+                <TableColumn fx:id="locationColumn" text="上课地点" prefWidth="120"/>
+                <TableColumn fx:id="creditColumn" text="学分" prefWidth="80"/>
+                <TableColumn fx:id="teacherNameColumn" text="教师姓名" prefWidth="150"/>
+                <TableColumn fx:id="scheduleColumn" text="上课时间" prefWidth="150"/>
+                <TableColumn fx:id="assessmentTypeColumn" text="考核方式" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

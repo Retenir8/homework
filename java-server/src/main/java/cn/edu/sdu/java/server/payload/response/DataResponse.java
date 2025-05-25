@@ -1,10 +1,7 @@
 package cn.edu.sdu.java.server.payload.response;
 
-import cn.edu.sdu.java.server.models.Courses;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /*
  * DataResponse 前端HTTP请求返回数据对象

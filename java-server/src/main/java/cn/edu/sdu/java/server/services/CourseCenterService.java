@@ -1,7 +1,6 @@
 package cn.edu.sdu.java.server.services;
 
-import cn.edu.sdu.java.server.models.Courses;
-import cn.edu.sdu.java.server.models.Score;
+import cn.edu.sdu.java.server.models.Course;
 import cn.edu.sdu.java.server.models.Student;
 import cn.edu.sdu.java.server.payload.request.DataRequest;
 import cn.edu.sdu.java.server.payload.response.DataResponse;
@@ -12,9 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import cn.edu.sdu.java.server.services.ScoreService ;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -32,47 +33,27 @@ public class CourseCenterService {
     }
 
     // 获取所有课程（带空结果检查）
-    public List<Courses> getAllCourses() {
-        List<Courses> courses = courseCenterRepository.findAll();
-        if (courses.isEmpty()) {
+    public List<Course> getAllCourses() {
+        List<Course> cours = courseCenterRepository.findAll();
+        if (cours.isEmpty()) {
             throw new RuntimeException("未找到任何课程数据");
         }
-        return courses;
+        return cours;
     }
 
     // 根据ID获取课程（优化Optional使用）
-    public Courses getCourseById(Integer courseId) {
-        Courses c = courseCenterRepository.findByCourseId(courseId)
+    public Course getCourseById(Integer courseId) {
+        Course c = courseCenterRepository.findByCourseId(courseId)
                 .orElseThrow(() -> new RuntimeException("未找到ID为 " + courseId + " 的课程"));
         return c;
     }
 
     // 保存课程（增加数据校验）
-    public Courses saveCourse(Courses course) {
+    public Course saveCourse(Course course) {
 
         return courseCenterRepository.save(course);
     }
 
-//    // 更新课程（完整校验）
-//    public Courses updateCourse(Integer id, Courses courseDetails) {
-//        Courses existingCourse = getCourseById(id);
-//
-//        // 更新前校验
-//        if (!existingCourse.getCourseId().equals(courseDetails.getCourseId()) &&
-//                courseCenterRepository.existsByCourseId(courseDetails.getCourseId())) {
-//            throw new RuntimeException("课程编号 " + courseDetails.getCourseId() + " 已存在");
-//        }
-//
-//        existingCourse.setCourseId(courseDetails.getCourseId());
-//        existingCourse.setCourseName(courseDetails.getCourseName());
-//        existingCourse.setTeacher(courseDetails.getTeacher());
-//        existingCourse.setLocation(courseDetails.getLocation());
-//        existingCourse.setCredit(courseDetails.getCredit());
-//        existingCourse.setSchedule(courseDetails.getSchedule());
-//        existingCourse.setAssessmentType(courseDetails.getAssessmentType());
-//
-//        return courseCenterRepository.save(existingCourse);
-//    }
 
     // 删除课程（增加存在性检查）
     public DataResponse deleteCourse(DataRequest req) {
@@ -107,11 +88,11 @@ public class CourseCenterService {
         Student student = studentOpt.get();
 
         // 根据课程ID从课程表中查找课程记录
-        Optional<Courses> courseOpt = courseCenterRepository.findByCourseId(courseId);
+        Optional<Course> courseOpt = courseCenterRepository.findByCourseId(courseId);
         if (!courseOpt.isPresent()) {
             return CommonMethod.getReturnMessageError("未找到对应课程");
         }
-        Courses course = courseOpt.get();
+        Course course = courseOpt.get();
 
         // 维护双向关联（假设 Course 中有 addStudent 方法，同时内部会将 self 添加到 Student 的 courses 集合中）
         course.addStudent(student);
@@ -124,19 +105,43 @@ public class CourseCenterService {
 
     public DataResponse searchCourses(DataRequest req) {
         String keyword = req.getString("keyword"); // 获取搜索关键字
-        List<Courses> courses;
+        List<Course> cours;
 
         if (keyword == null || keyword.trim().isEmpty()) {
             // 如果无关键字则返回所有记录
-            courses = courseCenterRepository.findAll();
+            cours = courseCenterRepository.findAll();
         } else {
             // 否则使用模糊搜索
-            courses = courseCenterRepository.findByCourseNameContainingIgnoreCase(keyword);
+            cours = courseCenterRepository.findByCourseNameContainingIgnoreCase(keyword);
         }
         // 此方法调用 CommonMethod.getReturnData() 封装返回，
         // 你可以根据实际情况对返回格式进行调整
-        System.out.println(courses);
-        return CommonMethod.getReturnData(courses);
+        System.out.println(cours);
+        return CommonMethod.getReturnData(cours);
+    }
+
+    public DataResponse getMyCourses(DataRequest req) {
+        // 从请求中获取 studentId
+        Integer studentId = req.getInteger("studentId");
+        if (studentId == null) {
+            return CommonMethod.getReturnMessageError("缺少学生ID");
+        }
+
+        // 根据 studentId 查询学生对象
+        Optional<Student> studentOpt = studentRepository.findById(studentId);
+        if (!studentOpt.isPresent()) {
+            return CommonMethod.getReturnMessageError("未找到指定的学生");
+        }
+
+        // 获取该学生关联的课程集合（会通过 courses_student 连接表返回相应课程）
+        Student student = studentOpt.get();
+        Set<Course> courses = student.getCourses();
+
+        // 如果需要将 Set 转换为 List，可使用如下方式：
+        List<Course> courseList = new ArrayList<>(courses);
+
+        // 返回查询到的课程数据
+        return CommonMethod.getReturnData(courseList);
     }
 }
 

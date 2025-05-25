@@ -351,7 +351,7 @@ public class StudentService {
         if (sList == null || sList.isEmpty())
             return list;
         Map<String,Object> m;
-        Courses c;
+        Course c;
         for (Score s : sList) {
             m = new HashMap<>();
             c = s.getCourse();
@@ -375,7 +375,7 @@ public class StudentService {
         if (sList == null || sList.isEmpty())
             return list;
         Map<String,Object> m;
-        Courses c;
+        Course c;
         for (Score s : sList) {
             c = s.getCourse();
             if (s.getMark() >= 90)
@@ -638,4 +638,13 @@ public class StudentService {
         return CommonMethod.getReturnMessageError("上传错误！");
     }
 
+    public DataResponse getMyStudentId(String userName) {
+        Integer studentId = studentRepository.findByStudentNum(userName).get().getStudentId();
+        String studentNum = studentRepository.findByStudentNum(userName).get().getPerson().getNum();
+        System.out.println(studentId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("studentId", studentId);
+        result.put("studentNum", studentNum);
+        return CommonMethod.getReturnData(result);
+    }
 }

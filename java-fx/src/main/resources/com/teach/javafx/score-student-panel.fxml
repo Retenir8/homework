@@ -45,13 +45,14 @@
     <center>
         <TableView fx:id="dataTableView">
             <columns>
-                <TableColumn fx:id="studentNumColumn" prefWidth="120.0" text="学号" />
-                <TableColumn fx:id="studentNameColumn" prefWidth="90.0" text="姓名" />
+                <TableColumn fx:id="studentNumColumn" prefWidth="200.0" text="学号" />
+                <TableColumn fx:id="studentNameColumn" prefWidth="100.0" text="姓名" />
                 <TableColumn fx:id="classNameColumn" prefWidth="140.0" text="班级" />
                 <TableColumn fx:id="courseNumColumn" prefWidth="120.0" text="课程号" />
-                <TableColumn fx:id="courseNameColumn" prefWidth="140.0" text="课程名" />
+                <TableColumn fx:id="courseNameColumn" prefWidth="180.0" text="课程名" />
                 <TableColumn fx:id="creditColumn" prefWidth="60.0" text="学分" />
                 <TableColumn fx:id="markColumn" prefWidth="60.0" text="成绩" />
+                <TableColumn fx:id="rankingColumn" prefWidth="60.0" text="排名" />
             </columns>
         </TableView>
     </center>

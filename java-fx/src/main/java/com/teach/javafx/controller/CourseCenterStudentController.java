@@ -1,5 +1,6 @@
 package com.teach.javafx.controller;
 
+import com.teach.javafx.MainApplication;
 import com.teach.javafx.request.DataRequest;
 import com.teach.javafx.request.DataResponse;
 import com.teach.javafx.request.HttpRequestUtil;
@@ -7,12 +8,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +42,8 @@ public class CourseCenterStudentController {
     @FXML
     private TableColumn<Map, String> assessmentTypeColumn;
 
-
+    private Stage myCourseStage = null;
+    private MyCourseController myCourseController;
     @FXML
     private TextField searchField;
     // 数据源
@@ -46,7 +54,7 @@ public class CourseCenterStudentController {
         // 初始化表格列绑定
         courseIdColumn.setCellValueFactory(new MapValueFactory<>("courseId"));
         courseNameColumn.setCellValueFactory(new MapValueFactory<>("courseName"));
-        teacherColumn.setCellValueFactory(new MapValueFactory<>("teacher"));
+        teacherColumn.setCellValueFactory(new MapValueFactory<>("teacherName"));
         locationColumn.setCellValueFactory(new MapValueFactory<>("location"));
         creditColumn.setCellValueFactory(new MapValueFactory<>("credit"));
         scheduleColumn.setCellValueFactory(new MapValueFactory<>("schedule"));
@@ -59,8 +67,7 @@ public class CourseCenterStudentController {
         // 绑定数据源
         courseTable.setItems(observableList);
 
-
-        loadCourseData();
+        onSearchByNameClick();
     }
 
     // 从后端加载课程数据
@@ -153,6 +160,43 @@ public class CourseCenterStudentController {
         } else {
             showAlert("错误", "选课失败: " + (res != null ? res.getMsg() : "没有响应"));
         }
+        myCourseController.initialize();
     }
 
+    public void onMyCourseButton() {
+        initMyCourseDialog();
+        myCourseStage.show();
+    }
+
+    private void initMyCourseDialog() {
+        if (myCourseStage != null) return;
+        FXMLLoader fxmlLoader;
+        try {
+            // 加载 FXML 布局文件
+            fxmlLoader = new FXMLLoader(MainApplication.class.getResource("myCourse-panel.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // 初始化新的 Stage
+            myCourseStage = new Stage();
+            myCourseStage.setScene(scene);
+            myCourseStage.setTitle("我的选课");
+            myCourseStage.initModality(Modality.APPLICATION_MODAL);
+            myCourseStage.initOwner(MainApplication.getMainStage());
+
+            // 设置更大的窗口大小及属性（例如宽度1200，高度800）
+            myCourseStage.setWidth(850);
+            myCourseStage.setHeight(700);
+            // 如果希望让用户也能手动调整窗口大小，就设置为 true，否则设置 false
+            myCourseStage.setResizable(true);
+
+            // 获取控制器实例，并做必要的初始化
+            myCourseController = fxmlLoader.getController();
+            // 如果需要给控制器传参，比如设置当前学生ID，可以在此调用 setter 方法
+            // myCourseController.setStudentId(currentStudentId);
+            // 若控制器中有 init() 方法，可调用以便执行数据加载操作
+            myCourseController.initialize(); // 或 myCourseController.init();
+        } catch (IOException e) {
+            throw new RuntimeException("加载 getMyCourse.fxml 失败", e);
+        }
+    }
 }

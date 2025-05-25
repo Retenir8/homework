@@ -65,6 +65,7 @@
         <!-- 操作按钮 -->
         <HBox alignment="CENTER" prefHeight="41.0" prefWidth="693.0" spacing="30">
             <Button onAction="#onSelectCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="选课" />
+            <Button onAction="#onMyCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="我的选课" />
         </HBox>
     </VBox>
 </AnchorPane>

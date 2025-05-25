@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- 使用 BorderPane 作为根布局 -->
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+                fx:controller="com.teach.javafx.controller.ScheduleEditController">
+    <!-- 中间区域使用 SplitPane 垂直方向分为两个区域 -->
+    <center>
+        <SplitPane orientation="VERTICAL">
+            <items>
+                <!-- 上部分：显示自己已选课程 -->
+                <VBox spacing="10" style="-fx-padding: 10;">
+                    <Label text="我的选课列表" style="-fx-font-size:16px; -fx-font-weight: bold;"/>
+                    <ListView fx:id="courseListView" prefHeight="200" />
+                </VBox>
+                <!-- 下部分：编辑备注 -->
+                <VBox spacing="10" style="-fx-padding: 10;">
+                    <Label text="备注编辑" style="-fx-font-size:16px; -fx-font-weight: bold;"/>
+                    <TextArea fx:id="remarkTextArea" prefHeight="150" wrapText="true" />
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+    <!-- 底部区域：操作按钮 -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10;">
+            <Button text="取消" onAction="#handleCancel" />
+            <Button text="确定" onAction="#handleConfirm" />
+        </HBox>
+    </bottom>
+</BorderPane>

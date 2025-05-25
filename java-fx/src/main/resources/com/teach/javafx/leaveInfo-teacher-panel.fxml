@@ -13,9 +13,9 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.LeaveInfoTeacherController"
-             style="-fx-background-color: #4853ba;">
+             style="-fx-background-color: #a4aae3;">
     <top>
-        <VBox spacing="15" style="-fx-background-color: #e6e6ed; -fx-padding: 15;">
+        <VBox spacing="15" style="-fx-background-color: #6161f3; -fx-padding: 15;">
         <HBox alignment="CENTER_LEFT" spacing="10">
             <Label text="请假管理系统" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
             <children>

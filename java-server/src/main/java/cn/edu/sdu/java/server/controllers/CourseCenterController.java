@@ -1,14 +1,11 @@
 package cn.edu.sdu.java.server.controllers;
-import ch.qos.logback.classic.Logger;
-import cn.edu.sdu.java.server.models.Courses;
+import cn.edu.sdu.java.server.models.Course;
 import cn.edu.sdu.java.server.repositorys.CourseCenterRepository;
 import cn.edu.sdu.java.server.repositorys.TeacherRepository;
 import cn.edu.sdu.java.server.services.CourseCenterService;
 import cn.edu.sdu.java.server.payload.request.DataRequest;
 import cn.edu.sdu.java.server.payload.response.DataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,8 +25,8 @@ public class CourseCenterController {
 
     @PostMapping("/getCoursesList")
     public DataResponse getAllCourses(@RequestBody DataRequest req) {
-        List<Courses> courses = courseCenterService.getAllCourses();
-        return DataResponse.success(courses);
+        List<Course> course = courseCenterService.getAllCourses();
+        return DataResponse.success(course);
     }
 
     // 添加新课程
@@ -42,7 +39,7 @@ public class CourseCenterController {
 //        if(teacherRepository.findByPersonNum(num) != null || teacherRepository.findByPersonName(name) != null || teacherRepository.findByPersonNum(num)!=teacherRepository.findByPersonName(name)) {
 //            return DataResponse.error(0,"教工号与教师不匹配");
 //        }
-        Courses course = new Courses();
+        Course course = new Course();
         course.setCourseName(req.getString("courseName"));
         course.setTeacher(teacherRepository.findByPersonNum(req.getString("teacherNum")));
         course.setTeacherName(req.getString("teacherName"));
@@ -51,7 +48,7 @@ public class CourseCenterController {
         course.setSchedule(req.getString("schedule"));
         course.setAssessmentType(req.getString("assessmentType"));
         System.out.println(course);
-        Courses courses = courseCenterService.saveCourse(course);
+        Course courses = courseCenterService.saveCourse(course);
         System.out.println("保存成功"+courses);
         return DataResponse.success(courses);
     }
@@ -60,7 +57,7 @@ public class CourseCenterController {
     @PostMapping("/update")
     public DataResponse updateCourse(@RequestBody DataRequest req) {
         Integer courseId = req.getInteger("courseId");
-        Courses existing = courseCenterService.getCourseById(courseId);
+        Course existing = courseCenterService.getCourseById(courseId);
 //        String name = req.getString("teacherName");
 //        String num = req.getString("teacherNum");
 //        if(teacherRepository.findByPersonNum(num) != null || teacherRepository.findByPersonName(name) != null || teacherRepository.findByPersonNum(num)!=teacherRepository.findByPersonName(name)) {
@@ -99,6 +96,12 @@ public class CourseCenterController {
     public DataResponse searchCourses(@RequestBody DataRequest req) {
 
         return courseCenterService.searchCourses(req);
+    }
+
+    @PostMapping("/getMyCourses")
+    public DataResponse getMyCourses(@RequestBody DataRequest req) {
+
+        return courseCenterService.getMyCourses(req);
     }
 }
 

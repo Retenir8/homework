@@ -111,14 +111,14 @@ public class ScoreTableController {
         String courseSearch = courseNameTextField.getText().trim();
 
         // 下拉列表获得精确筛选条件
-        Integer personId = 0;
+        Integer studentId = 0;
         Integer courseId = 0;
         OptionItem op = studentComboBox.getSelectionModel().getSelectedItem();
         if (op != null) {
             try {
-                personId = Integer.parseInt(op.getValue());
+                studentId = Integer.parseInt(op.getValue());
             } catch (NumberFormatException ex) {
-                personId = 0;
+                studentId = 0;
             }
         }
         op = courseComboBox.getSelectionModel().getSelectedItem();
@@ -131,13 +131,13 @@ public class ScoreTableController {
         }
 
         DataRequest req = new DataRequest();
-        req.add("personId", personId);
+        req.add("studentId", studentId);
         req.add("courseId", courseId);
         req.add("studentSearch", studentSearch); // 传入学生姓名/学号
         req.add("courseSearch", courseSearch);   // 传入课程名称/课程号
 
         // 请求后端 API，接口应支持模糊查询，名称可自行调整（例如：/api/score/searchScoreList）
-        DataResponse res = HttpRequestUtil.request("/api/score/searchScoreList", req);
+        DataResponse res = HttpRequestUtil.request("/api/score/getScoreList", req);
         if (res != null && res.getCode() == 0) {
             scoreList = (ArrayList<Map>) res.getData();
         } else {
@@ -208,8 +208,8 @@ public class ScoreTableController {
         if (!"ok".equals(cmd))
             return;
         DataRequest req = new DataRequest();
-        Integer personId = CommonMethod.getInteger(data, "personId");
-        if (personId == null) {
+        Integer studentId = CommonMethod.getInteger(data, "studentId");
+        if (studentId == null) {
             MessageDialog.showDialog("没有选中学生，不能添加保存！");
             return;
         }
@@ -218,7 +218,7 @@ public class ScoreTableController {
             MessageDialog.showDialog("没有选中课程，不能添加保存！");
             return;
         }
-        req.add("personId", personId);
+        req.add("studentId", studentId);
         req.add("courseId", courseId);
         req.add("scoreId", CommonMethod.getInteger(data, "scoreId"));
         req.add("mark", CommonMethod.getInteger(data, "mark"));
@@ -230,46 +230,25 @@ public class ScoreTableController {
         }
     }
 
-    @FXML
-    private void onAddButtonClick() {
-        initDialog();
-        scoreEditController.showDialog(null);
-        MainApplication.setCanClose(false);
-        stage.showAndWait();
-    }
-
-    @FXML
-    private void onEditButtonClick() {
-        Map data = (Map) dataTableView.getSelectionModel().getSelectedItem();
-        if (data == null) {
-            MessageDialog.showDialog("没有选中，不能修改！");
-            return;
-        }
-        initDialog();
-        scoreEditController.showDialog(data);
-        MainApplication.setCanClose(false);
-        stage.showAndWait();
-    }
-
-    @FXML
-    private void onDeleteButtonClick() {
-        Map<String, Object> form = (Map<String, Object>) dataTableView.getSelectionModel().getSelectedItem();
-        if (form == null) {
-            MessageDialog.showDialog("没有选择，不能删除");
-            return;
-        }
-        int ret = MessageDialog.choiceDialog("确认要删除吗?");
-        if (ret != MessageDialog.CHOICE_YES) {
-            return;
-        }
-        Integer scoreId = CommonMethod.getInteger(form, "scoreId");
-        DataRequest req = new DataRequest();
-        req.add("scoreId", scoreId);
-        DataResponse res = HttpRequestUtil.request("/api/score/scoreDelete", req);
-        if (res != null && res.getCode() == 0) {
-            onQueryButtonClick();
-        } else {
-            MessageDialog.showDialog(res != null ? res.getMsg() : "删除失败，服务器无响应！");
-        }
-    }
+//    @FXML
+//    private void onDeleteButtonClick() {
+//        Map<String, Object> form = (Map<String, Object>) dataTableView.getSelectionModel().getSelectedItem();
+//        if (form == null) {
+//            MessageDialog.showDialog("没有选择，不能删除");
+//            return;
+//        }
+//        int ret = MessageDialog.choiceDialog("确认要删除吗?");
+//        if (ret != MessageDialog.CHOICE_YES) {
+//            return;
+//        }
+//        Integer scoreId = CommonMethod.getInteger(form, "scoreId");
+//        DataRequest req = new DataRequest();
+//        req.add("scoreId", scoreId);
+//        DataResponse res = HttpRequestUtil.request("/api/score/scoreDelete", req);
+//        if (res != null && res.getCode() == 0) {
+//            onQueryButtonClick();
+//        } else {
+//            MessageDialog.showDialog(res != null ? res.getMsg() : "删除失败，服务器无响应！");
+//        }
+//    }
 }

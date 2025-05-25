@@ -35,7 +35,7 @@
         </rowConstraints>
         <children>
             <Label text="学号" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="studentNumField" promptText="输入学号" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="studentNumField" promptText="输入学号" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0" />
             <Button mnemonicParsing="false" onAction="#onVerifyStudentClick" text="验证" GridPane.columnIndex="2" GridPane.rowIndex="0" />
 
             <Label text="姓名" GridPane.columnIndex="0" GridPane.rowIndex="1" />

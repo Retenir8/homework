@@ -176,9 +176,17 @@ public class LeaveEditController {
 
     @FXML
     private void onVerifyStudentClick() {
-        String studentNum = studentNumField.getText().trim();
+        String studentNum = null;
+        DataResponse resp = HttpRequestUtil.request("/api/student/getStudentId", new DataRequest());
+        if (resp != null && resp.getCode() == 0) {
+            // 将返回的 data 转换为 Map
+            Map<String, Object> dataMap = (Map<String, Object>) resp.getData();
+            studentNum = (String) dataMap.get("studentNum");
+        } else {
+            System.out.println("服务器响应异常");
+        }
         if (studentNum.isEmpty()) {
-            MessageDialog.showDialog("请输入学号后进行查询！");
+            MessageDialog.showDialog("请验证身份！");
             return;
         }
 

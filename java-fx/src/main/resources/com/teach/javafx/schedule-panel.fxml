@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="642.0" prefWidth="1015.0" stylesheets="@css/schedule-style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.ScheduleController">
+    <!-- 顶部标题 -->
+    <top>
+        <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-padding: 10 0 5 0;" text="课程表" BorderPane.alignment="CENTER" />
+    </top>
+    <!-- 中间区域放置 ScrollPane，里面包含 GridPane -->
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+            <content>
+                <GridPane fx:id="timetableGrid" alignment="CENTER" hgap="5" style="-fx-padding: 5;" vgap="5">
+                    <!-- 设置列约束，第一列宽度稍大，其余7列均匀 -->
+                    <columnConstraints>
+                        <!-- 第一列：时间标签 -->
+                        <ColumnConstraints prefWidth="120" />
+                        <!-- 后面7列：每一天，宽度可根据页面实际宽度做微调 -->
+                        <ColumnConstraints prefWidth="140" />
+                        <ColumnConstraints prefWidth="140" />
+                        <ColumnConstraints prefWidth="140" />
+                        <ColumnConstraints prefWidth="140" />
+                        <ColumnConstraints prefWidth="140" />
+                        <ColumnConstraints prefWidth="140" />
+                        <ColumnConstraints prefWidth="140" />
+                    </columnConstraints>
+                    <!-- 行约束可以稍微保留自动分布 -->
+                    <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                    </rowConstraints>
+                    <children>
+                        <!-- 第一行：空白左上角及7天的列头 -->
+                        <Label text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="124.0" styleClass="header-cell" text="星期一" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="124.0" styleClass="header-cell" text="星期二" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="124.0" styleClass="header-cell" text="星期三" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="124.0" styleClass="header-cell" text="星期四" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="126.0" styleClass="header-cell" text="星期五" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="124.0" styleClass="header-cell" text="星期六" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+                        <Label prefHeight="39.0" prefWidth="125.0" styleClass="header-cell" text="星期日" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+
+                        <!-- 接下来5行，各节课 -->
+                        <!-- 第一节 -->
+                        <Label prefHeight="60.0" prefWidth="106.0" styleClass="period-label" text="8:00-9:50" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_1" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_2" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_3" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_4" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_5" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_6" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                        <Button fx:id="cell_1_7" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+
+                        <!-- 第二节 -->
+                        <Label prefHeight="58.0" prefWidth="104.0" styleClass="period-label" text="10:10-12:00" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_1" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_2" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_3" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_4" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_5" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_6" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                        <Button fx:id="cell_2_7" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+
+                        <!-- 第三节 -->
+                        <Label prefHeight="62.0" prefWidth="105.0" styleClass="period-label" text="2:00-3:50" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_1" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_2" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_3" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_4" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_5" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_6" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                        <Button fx:id="cell_3_7" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+
+                        <!-- 第四节 -->
+                        <Label prefHeight="59.0" prefWidth="108.0" styleClass="period-label" text="4:10-6:00" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_1" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_2" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_3" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_4" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_5" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_6" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                        <Button fx:id="cell_4_7" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+
+                        <!-- 第五节 -->
+                        <Label prefHeight="59.0" prefWidth="107.0" styleClass="period-label" text="7:00-8:50" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_1" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_2" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_3" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_4" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_5" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_6" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                        <Button fx:id="cell_5_7" onAction="#handleCellEdit" styleClass="cell-button" text="-" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+                    </children>
+                </GridPane>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

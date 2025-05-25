@@ -1,0 +1,31 @@
+.header-cell {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-background-color: #dfe6e9;
+    -fx-padding: 8px;
+    -fx-border-color: #b2bec3;
+    -fx-border-width: 0 0 1 0;
+}
+
+.period-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-background-color: #636e72;
+    -fx-text-fill: white;
+    -fx-padding: 8px;
+    -fx-border-color: #afc3cc;
+}
+
+.cell-button {
+    -fx-font-size: 20px;         /* 可以适当调大字体 */
+    -fx-pref-width: 560px;       /* 增大宽度 */
+    -fx-pref-height: 150px;       /* 增大高度 */
+    -fx-background-color: #74b9ff;
+    -fx-text-fill: #2d3436;
+    -fx-border-color: #a6d2f4;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
