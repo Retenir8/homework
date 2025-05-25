@@ -93,15 +93,16 @@ public class ScoreService {
         Integer mark = dataRequest.getInteger("mark");
         Integer scoreId = dataRequest.getInteger("scoreId");
         Optional<Score> op = scoreRepository.findById(scoreId);
-        Score s = null;
+        Score s ;
         if (op.isPresent()) {
-            Score score = op.get();
+            s = op.get();
             System.out.println("✅ 找到分数 ");
-            score.setMark(mark);
+            s.setMark(mark);
         } else {
             System.out.println("❌ 分数不存在");
             return CommonMethod.getReturnMessageOK();
         }
+        System.out.println(s);
         scoreRepository.save(s);
         return CommonMethod.getReturnMessageOK();
     }

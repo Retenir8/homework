@@ -76,6 +76,7 @@
                 <TableColumn fx:id="courseNameColumn" prefWidth="140.0" text="课程名" />
                 <TableColumn fx:id="creditColumn" prefWidth="60.0" text="学分" />
                 <TableColumn fx:id="markColumn" prefWidth="60.0" text="成绩" />
+                <TableColumn fx:id="rankingColumn" prefWidth="60.0" text="排名" />
                 <TableColumn fx:id="editColumn" prefWidth="60.0" text="操作" />
             </columns>
         </TableView>

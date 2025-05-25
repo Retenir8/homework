@@ -41,6 +41,8 @@ public class ScoreTableController {
     @FXML
     private TableColumn<Map, String> markColumn;
     @FXML
+    private TableColumn<Map, String> rankingColumn;
+    @FXML
     private TableColumn<Map, Button> editColumn;
 
     // 搜索条件：通过文本框输入模糊查询信息
@@ -82,6 +84,7 @@ public class ScoreTableController {
         courseNameColumn.setCellValueFactory(new MapValueFactory<>("courseName"));
         creditColumn.setCellValueFactory(new MapValueFactory<>("credit"));
         markColumn.setCellValueFactory(new MapValueFactory<>("mark"));
+        rankingColumn.setCellValueFactory(new MapValueFactory<>("ranking"));
         editColumn.setCellValueFactory(new MapValueFactory<>("edit")); // 将放入 Map 中的编辑按钮显示到该列
 
         // 加载学生和课程下拉选项列表，从后端获取数据（返回值为 OptionItem 的 List）
@@ -170,6 +173,7 @@ public class ScoreTableController {
         if (scoreData == null)
             return;
         initDialog();
+        System.out.println(scoreData);
         scoreEditController.showDialog(scoreData);
         MainApplication.setCanClose(false);
         stage.showAndWait();
@@ -193,7 +197,7 @@ public class ScoreTableController {
             stage.setOnCloseRequest(event -> MainApplication.setCanClose(true));
             scoreEditController = fxmlLoader.getController();
             scoreEditController.setScoreTableController(this);
-            scoreEditController.init();
+            scoreEditController.initialize();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -209,10 +213,7 @@ public class ScoreTableController {
             return;
         DataRequest req = new DataRequest();
         Integer studentId = CommonMethod.getInteger(data, "studentId");
-        if (studentId == null) {
-            MessageDialog.showDialog("没有选中学生，不能添加保存！");
-            return;
-        }
+
         Integer courseId = CommonMethod.getInteger(data, "courseId");
         if (courseId == null) {
             MessageDialog.showDialog("没有选中课程，不能添加保存！");
