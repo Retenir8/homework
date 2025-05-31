@@ -27,5 +27,5 @@ public interface LeaveInfoRepository extends JpaRepository<LeaveInfo, Integer> {
     void deleteById(Integer leaveInfoId); // 直接删除记录
 
 
-
+    void deleteByStudentStudentId(Integer studentId);
 }

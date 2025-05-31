@@ -1,50 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TextField?>
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.LeaveTableController">
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.teach.javafx.controller.LeaveTableController"
+            stylesheets="@material-style.css"
+            prefWidth="1200" prefHeight="800"
+            style="-fx-background-color: #f5f5f5;">
+
+    <!-- 顶部工具栏 -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="5.0">
-            <children>
-                <FlowPane alignment="TOP_LEFT" prefHeight="40.0" prefWidth="200.0">
-                    <children>
-                        <Button mnemonicParsing="false" onAction="#onAddLeaveClick" text="添加请假" />
-                        <Button mnemonicParsing="false" onAction="#onDeleteLeaveClick" text="删除" />
-                        <Button mnemonicParsing="false" onAction="#onAuditClick" text="审核" />
-                        <Button mnemonicParsing="false" onAction="#onBackClick" text="销假" />
-                    </children>
-                </FlowPane>
-                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-                <FlowPane alignment="TOP_RIGHT" prefHeight="40.0" prefWidth="500.0">
-                    <children>
-                        <Button mnemonicParsing="false" onAction="#onSearchByBackClick" text="未销假查询"/>
-                        <Label text="学生查询" />
-                        <TextField fx:id="searchNameField" promptText="输入姓名查询"/>
-                        <Button mnemonicParsing="false" onAction="#onSearchByNameClick" text="查询"/>
-                    </children>
-                </FlowPane>
-            </children>
+        <HBox alignment="CENTER_LEFT" styleClass="tool-bar" spacing="10">
+            <effect>
+                <DropShadow radius="5" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+            </effect>
+
+            <Label text="请假管理系统" styleClass="label-title"/>
+
+            <!-- 操作按钮组 -->
+            <HBox spacing="5" alignment="CENTER_LEFT">
+                <Button onAction="#onAddLeaveClick" text="添加请假" styleClass="button info-button"/>
+                <Button onAction="#onDeleteLeaveClick" text="删除" styleClass="button danger-button"/>
+                <Button onAction="#onAuditClick" text="审核" styleClass="button warning-button"/>
+                <Button onAction="#onBackClick" text="销假" styleClass="button success-button"/>
+            </HBox>
+
+            <Pane HBox.hgrow="ALWAYS"/>
+
+            <!-- 搜索框 -->
+            <HBox spacing="5" alignment="CENTER_RIGHT">
+                <Button onAction="#onSearchByBackClick" text="未销假查询"
+                        styleClass="button primary-button"/>
+
+                <Label text="学生查询" styleClass="search-label"/>
+                <TextField fx:id="searchNameField" promptText="输入姓名查询"
+                           styleClass="search-field"/>
+                <Button onAction="#onSearchByNameClick" text="查询"
+                        styleClass="button primary-button"/>
+            </HBox>
         </HBox>
     </top>
+
+    <!-- 主内容区 -->
     <center>
-        <TableView fx:id="leaveTableView">
-            <columns>
-                <TableColumn fx:id="studentNumColumn" prefWidth="120.0" text="学号" />
-                <TableColumn fx:id="studentNameColumn" prefWidth="90.0" text="姓名" />
-                <TableColumn fx:id="reasonColumn" prefWidth="140.0" text="请假理由" />
-                <TableColumn fx:id="destinationColumn" prefWidth="140.0" text="目的地" />
-                <TableColumn fx:id="phoneColumn" prefWidth="120.0" text="联系方式" />
-                <TableColumn fx:id="backTimeColumn" prefWidth="140.0" text="返校时间" />
-                <TableColumn fx:id="opinionColumn" prefWidth="120.0" text="辅导员意见" />
-                <TableColumn fx:id="backColumn" prefWidth="80.0" text="销假状态" />
-                <TableColumn fx:id="auditStatusColumn" prefWidth="80.0" text="审核状态" />
-            </columns>
-        </TableView>
+        <VBox styleClass="card" spacing="10" style="-fx-padding: 5;">
+            <Label text="请假信息列表" styleClass="label-subtitle"/>
+
+            <TableView fx:id="leaveTableView" styleClass="material-table">
+                <columns>
+                    <TableColumn fx:id="studentNumColumn" text="学号" prefWidth="120"/>
+                    <TableColumn fx:id="studentNameColumn" text="姓名" prefWidth="90"/>
+                    <TableColumn fx:id="reasonColumn" text="请假理由" prefWidth="140"/>
+                    <TableColumn fx:id="destinationColumn" text="目的地" prefWidth="140"/>
+                    <TableColumn fx:id="phoneColumn" text="联系方式" prefWidth="120"/>
+                    <TableColumn fx:id="backTimeColumn" text="返校时间" prefWidth="140"/>
+                    <TableColumn fx:id="opinionColumn" text="辅导员意见" prefWidth="120"/>
+                    <TableColumn fx:id="backColumn" text="销假状态" prefWidth="80"/>
+                    <TableColumn fx:id="auditStatusColumn" text="审核状态" prefWidth="80"/>
+                </columns>
+            </TableView>
+        </VBox>
     </center>
 </BorderPane>

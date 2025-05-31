@@ -88,7 +88,7 @@ public class CourseCenterController {
                     Map rowData = getTableView().getItems().get(getIndex());
                     openTimeSelectionDialog(rowData);
                 });
-                btn.setStyle("-fx-background-color: #FFA726; -fx-text-fill: white;");
+                btn.setStyle("-fx-background-color: #a6d2f4; -fx-text-fill: white;");
             }
 
             @Override

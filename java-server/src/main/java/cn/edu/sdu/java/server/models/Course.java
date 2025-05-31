@@ -5,24 +5,27 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
 @Getter
 @Entity
-@Table(name = "course")  // 明确指定表名
+@Table(name = "course")
 public class Course {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Integer courseId;
 
-    @Column(name = "course_name", nullable = false)  // 添加非空约束
+    @Column(name = "course_name", nullable = false)
     private String courseName;
 
     @ManyToOne
-    @JoinColumn(name="teacher_id")
+    @JoinColumn(name = "teacher_id")
     @JsonIgnore
     private Teacher teacher;
 
@@ -33,7 +36,7 @@ public class Course {
     private String location;
 
     @Column(name = "credit")
-    private Integer credit;
+    private Double credit;
 
     @Column(name = "schedule")
     private String schedule;
@@ -41,30 +44,22 @@ public class Course {
     @Column(name = "assessment_type")
     private String assessmentType;
 
-    // 多对多关联：一个课程可以有多个学生选修
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
-            name = "student_courses", // 连接表名称
-            joinColumns = @JoinColumn(name = "course_id"),  // 当前实体在连接表的外键列
-            inverseJoinColumns = @JoinColumn(name = "student_id")  // 另一边（Student）的外键列
+            name = "student_courses",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "course_id"), // 这里的 course_id 引用 Course 的主键列
+            inverseJoinColumns = @JoinColumn(name = "student_id", referencedColumnName = "student_id") // 这里的 student_id 引用 Student 的主键列
     )
-    private Set<Student> students = new HashSet<>();
+    private List<Student> students = new ArrayList<>(); // 初始化 students 集合
 
-    // 为了方便维护双向关联关系，可以添加一个辅助方法：
-    public void addStudent(Student student) {
-        this.students.add(student);
-        student.getCourses().add(this);
+    public Course () {
+        this.students = new ArrayList<>(); // 也可以在无参构造方法中初始化
     }
-
-    public void removeStudent(Student student) {
-        this.students.remove(student);
-        student.getCourses().remove(this);
-    }
+    // 可选的字段：如果需要把所有35位时间信息以字符串形式统一存储
     @Column(name = "timeSlots")
     private String timeSlots;
 
-    // 新增 35 个列（使用 String 存储，默认"0"）
+    // 以下为课程在课表中的35个时段，默认值均为 "0"
     @Column(name = "c1")
     private String c1 = "0";
     @Column(name = "c2")
@@ -135,5 +130,4 @@ public class Course {
     private String c34 = "0";
     @Column(name = "c35")
     private String c35 = "0";
-
 }

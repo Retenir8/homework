@@ -91,16 +91,13 @@ public class CourseCenterStudentController {
 
     // 显示警告对话框
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    public void chooseCourseButton() {
-
-    }
 
     @FXML
     public void onSearchByNameClick() {
@@ -194,7 +191,7 @@ public class CourseCenterStudentController {
             // 如果需要给控制器传参，比如设置当前学生ID，可以在此调用 setter 方法
             // myCourseController.setStudentId(currentStudentId);
             // 若控制器中有 init() 方法，可调用以便执行数据加载操作
-            myCourseController.initialize(); // 或 myCourseController.init();
+            myCourseController.initialize();
         } catch (IOException e) {
             throw new RuntimeException("加载 getMyCourse.fxml 失败", e);
         }

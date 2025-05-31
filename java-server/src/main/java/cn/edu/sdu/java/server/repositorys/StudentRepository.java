@@ -19,12 +19,12 @@ import java.util.Optional;
  */
 
 public interface StudentRepository extends JpaRepository<Student,Integer> {
-    @Query("SELECT s FROM Student s WHERE s.studentId = :studentId")
-    Student findByStudentStudentId(@Param("studentId") Integer studentId);
-
     Optional<Student> findByPersonPersonId(Integer personId);
     Optional<Student> findByPersonNum(String num);
     List<Student> findByPersonName(String name);
+
+    @Query("SELECT s FROM Student s WHERE s.studentId = :studentId")
+    Student findByStudentStudentId(@Param("studentId") Integer studentId);
 
     @Query(value = "from Student where ?1='' or person.num like %?1% or person.name like %?1% ")
     List<Student> findStudentListByNumName(String numName);
@@ -37,9 +37,9 @@ public interface StudentRepository extends JpaRepository<Student,Integer> {
     @Query("SELECT s FROM Student s JOIN FETCH s.person")
     List<Student> findAllWithPerson();
 
-
-
     @Query("SELECT s FROM Student s JOIN s.person p WHERE p.num = :studentNum")
     Optional<Student> findByStudentNum(String studentNum);
+
+
 
 }

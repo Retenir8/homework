@@ -84,7 +84,6 @@ public class ScoreTableController {
         courseNameColumn.setCellValueFactory(new MapValueFactory<>("courseName"));
         creditColumn.setCellValueFactory(new MapValueFactory<>("credit"));
         markColumn.setCellValueFactory(new MapValueFactory<>("mark"));
-        rankingColumn.setCellValueFactory(new MapValueFactory<>("ranking"));
         editColumn.setCellValueFactory(new MapValueFactory<>("edit")); // 将放入 Map 中的编辑按钮显示到该列
 
         // 加载学生和课程下拉选项列表，从后端获取数据（返回值为 OptionItem 的 List）

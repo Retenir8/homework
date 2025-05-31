@@ -1,20 +1,24 @@
 package cn.edu.sdu.java.server.repositorys;
 
 import cn.edu.sdu.java.server.models.Activity;
-import cn.edu.sdu.java.server.models.Person;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface ActivityRepository extends JpaRepository<Activity, Integer> {
+    @Query(value = "from Activity where ?1='' or title like %?1%  ")
+    List<Activity> findActivityListBytitle(String title);
 
-    // 按活动开始时间排序查询
-    List<Activity> findByOrderByStartTimeAsc();
+    Optional<Activity> findByTitle(String title);
 
-    // 根据组织者查询活动
-    List<Activity> findByOrganizer(Person organizer);
+    @Query("SELECT a FROM Activity a JOIN FETCH a.students WHERE a.activity_id = :activityId")
+    Optional<Activity> findActivityByIdWithStudents(@Param("activityId") int activityId);
 
-    List<Activity> findByNameContaining(String filter);
+
 }

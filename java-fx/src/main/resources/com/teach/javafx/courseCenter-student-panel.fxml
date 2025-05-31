@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterStudentController">
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterStudentController" style="-fx-background-color: #f5f5f5;">
     <VBox spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
         <!-- 标题 -->
         <HBox alignment="CENTER_LEFT" spacing="10">
@@ -16,13 +15,13 @@
             </Label>
 
             <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                <TextField fx:id="searchField" promptText="输入课程名称搜索" style="-fx-pref-width: 250px;" />
-                <Button onAction="#onSearchByNameClick" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-padding: 5 15 5 15;" text="搜索" />
+                <TextField fx:id="searchField" promptText="输入课程名称搜索" style="-fx-pref-width: 250px; -fx-background-radius: 15; -fx-padding: 3 10;" />
+                <Button onAction="#onSearchByNameClick" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-padding: 5 15 5 15; -fx-background-radius: 15;" text="搜索" />
             </HBox>
         </HBox>
 
         <!-- 课程表格 -->
-        <TableView fx:id="courseTable" prefHeight="378.0" prefWidth="693.0">
+        <TableView fx:id="courseTable" prefHeight="378.0" prefWidth="693.0" style="-fx-background-color: transparent;">
             <columns>
                 <TableColumn fx:id="courseIdColumn" prefWidth="80" text="课程号">
                     <cellValueFactory>
@@ -60,12 +59,16 @@
                     </cellValueFactory>
                 </TableColumn>
             </columns>
+            <style>
+                -fx-table-cell-border-color: transparent;
+                -fx-table-header-border-color: transparent;
+            </style>
         </TableView>
 
         <!-- 操作按钮 -->
         <HBox alignment="CENTER" prefHeight="41.0" prefWidth="693.0" spacing="30">
-            <Button onAction="#onSelectCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="选课" />
-            <Button onAction="#onMyCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white;" text="我的选课" />
+            <Button onAction="#onSelectCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white; -fx-background-radius: 15;" text="选课" />
+            <Button onAction="#onMyCourseButton" prefHeight="23.0" prefWidth="119.0" style="-fx-background-color: #2144f3; -fx-text-fill: white; -fx-background-radius: 15;" text="我的选课" />
         </HBox>
     </VBox>
 </AnchorPane>

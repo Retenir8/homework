@@ -31,11 +31,7 @@ public class ScoreStudentController {
     @FXML
     private TableColumn<Map, String> markColumn;
     @FXML
-    private TableColumn<Map, String> rankingColumn;
-    @FXML
     private TextField courseNameTextField;
-    @FXML
-    private ComboBox<String> courseComboBox;
 
     private ObservableList<Map<String, Object>> scoreList = FXCollections.observableArrayList();
 
@@ -49,7 +45,7 @@ public class ScoreStudentController {
         courseNameColumn.setCellValueFactory(new MapValueFactory<>("courseName"));
         creditColumn.setCellValueFactory(new MapValueFactory<>("credit"));
         markColumn.setCellValueFactory(new MapValueFactory<>("mark"));
-        rankingColumn.setCellValueFactory(new MapValueFactory<>("ranking"));
+
 
         // 将 scoreList 设置为 dataTableView 的数据源
         dataTableView.setItems(scoreList);
@@ -69,33 +65,16 @@ public class ScoreStudentController {
         }
 
         onQueryButtonClick(); // ✅ 初始化加载学生成绩
-        setupComboBox(); // ✅ 初始化课程选择框
     }
 
-
-    private void setupComboBox() {
-        DataRequest req = new DataRequest();
-        req.add("studentId", studentId);
-        DataResponse res = HttpRequestUtil.request("/api/courses/getMyCourses", req);
-
-        if (res != null && res.getCode() == 0) {
-            List<String> courseNames = (List<String>) res.getData();
-            courseComboBox.setItems(FXCollections.observableArrayList(courseNames));
-            System.out.println("✅ 课程列表加载成功！");
-        } else {
-            System.out.println("❌ 获取课程列表失败！");
-        }
-    }
 
     @FXML
     private void onQueryButtonClick() {
         String searchText = courseNameTextField.getText().trim();
-        String selectedCourse = courseComboBox.getSelectionModel().getSelectedItem();
 
         DataRequest req = new DataRequest();
         req.add("studentId", studentId);
         req.add("searchText", searchText);
-        req.add("courseName", selectedCourse);
 
         DataResponse res = HttpRequestUtil.request("/api/score/searchMyScores", req);
         System.out.println(res.getData());

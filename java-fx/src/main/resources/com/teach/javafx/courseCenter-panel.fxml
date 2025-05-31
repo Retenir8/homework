@@ -11,26 +11,38 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterController">
+<?import javafx.scene.layout.RowConstraints?>
+<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.CourseCenterController" style="-fx-background-color: #f5f5f5;">
     <VBox spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="课程信息管理系统">
+        <effect>
+            <DropShadow radius="10" color="rgba(0,0,0,0.1)" offsetX="0" offsetY="2"/>
+        </effect>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #3f51b5; -fx-padding: 15 20;">
+            <effect>
+                <DropShadow radius="5" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+            </effect>
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="课程信息管理系统">
                 <padding>
                     <Insets bottom="10" />
                 </padding>
             </Label>
 
             <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                <TextField fx:id="searchField" promptText="输入课程名称搜索" style="-fx-pref-width: 250px;" />
-                <Button onAction="#onSearchByNameClick" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-padding: 5 15 5 15;" text="搜索" />
+                <TextField fx:id="searchField" promptText="输入课程名称搜索" style="-fx-pref-width: 250px; -fx-background-radius: 20; -fx-padding: 5 15;" />
+                <Button onAction="#onSearchByNameClick" style="-fx-background-color: #ff9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 5 20; -fx-cursor: hand;" text="搜索" >
+                    <effect>
+                        <DropShadow radius="3" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+                    </effect>
+                </Button>
             </HBox>
         </HBox>
 
         <!-- 课程表格 -->
-        <TableView fx:id="courseTable" prefHeight="300">
+        <TableView fx:id="courseTable" prefHeight="300" style="-fx-background-color: transparent; -fx-border-radius: 4;">
             <columns>
                 <TableColumn fx:id="courseIdColumn" prefWidth="80" text="课程号">
                     <cellValueFactory>
@@ -70,32 +82,43 @@
                 <!-- 新增列: 选时间 -->
                 <TableColumn fx:id="timeSelectionColumn" prefWidth="100" text="选时间" />
             </columns>
+            <style>
+                -fx-table-cell-border-color: transparent;
+                -fx-table-header-border-color: transparent;
+            </style>
         </TableView>
 
         <!-- 输入表单 -->
-        <GridPane hgap="10" vgap="10">
+        <GridPane hgap="10" vgap="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;">
+            <effect>
+                <DropShadow radius="8" color="rgba(0,0,0,0.1)" offsetX="0" offsetY="2"/>
+            </effect>
             <padding>
                 <Insets top="20" />
             </padding>
-            <Label text="课程名称:" GridPane.rowIndex="1" />
-            <TextField fx:id="courseNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="课程名称:" GridPane.rowIndex="1" style="-fx-text-fill: #616161; -fx-font-weight: bold;"/>
+            <TextField fx:id="courseNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
 
-            <Label text="教工号" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="teacherNumField" promptText="输入教工号" GridPane.columnIndex="1" />
-            <Button onAction="#onVerifyTeacherClick" text="验证" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-            <TextField fx:id="teacherField" promptText="验证后自动填充" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+            <Label text="教工号" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: #616161; -fx-font-weight: bold;"/>
+            <TextField fx:id="teacherNumField" promptText="输入教工号" GridPane.columnIndex="1" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+            <Button onAction="#onVerifyTeacherClick" text="验证" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 5 15; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow radius="3" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+                </effect>
+            </Button>
+            <TextField fx:id="teacherField" promptText="验证后自动填充" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
 
-            <Label text="授课地点:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <TextField fx:id="locationField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label text="授课地点:" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-text-fill: #616161; -fx-font-weight: bold;"/>
+            <TextField fx:id="locationField" GridPane.columnIndex="3" GridPane.rowIndex="1" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
 
-            <Label text="学分:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="creditField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="学分:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-text-fill: #616161; -fx-font-weight: bold;"/>
+            <TextField fx:id="creditField" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
 
-            <Label text="授课时间:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <TextField fx:id="scheduleField" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+            <Label text="授课时间:" GridPane.columnIndex="2" GridPane.rowIndex="2" style="-fx-text-fill: #616161; -fx-font-weight: bold;"/>
+            <TextField fx:id="scheduleField" GridPane.columnIndex="3" GridPane.rowIndex="2" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
 
-            <Label text="考察形式:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <TextField fx:id="assessmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="考察形式:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-text-fill: #616161; -fx-font-weight: bold;"/>
+            <TextField fx:id="assessmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
 
             <columnConstraints>
                 <ColumnConstraints />
@@ -104,18 +127,18 @@
                 <ColumnConstraints />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
-
-        <!-- 操作按钮 -->
         <HBox alignment="CENTER" spacing="20">
             <Button onAction="#addCourseButton" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="添加课程" />
             <Button onAction="#editCourseButton" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="编辑课程" />
             <Button onAction="#deleteCourseButton" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="删除课程" />
         </HBox>
+
     </VBox>
 </AnchorPane>
+

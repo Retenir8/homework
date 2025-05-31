@@ -164,7 +164,7 @@ public class ScoreService {
     public DataResponse searchMyScores(DataRequest dataRequest) {
         Integer studentId = dataRequest.getInteger("studentId");
         String searchText = dataRequest.getString("searchText");
-        String courseName = dataRequest.getString("courseName");
+//        String courseName = dataRequest.getString("courseName");
 
         // 检查必须传入的学生ID
         if (studentId == null) {
@@ -175,26 +175,23 @@ public class ScoreService {
         if (searchText != null) {
             searchText = searchText.trim();
         }
-        if (courseName != null) {
-            courseName = courseName.trim();
-        }
+//        if (courseName != null) {
+//            courseName = courseName.trim();
+//        }
 
         List<Score> scores;
 
         // 如果两个搜索条件都没有提供，则查询当前学生的所有成绩
-        if ((searchText == null || searchText.isEmpty()) && (courseName == null || courseName.isEmpty())) {
+        if ((searchText == null || searchText.isEmpty()) ) {
             scores = scoreRepository.findByStudentStudentId(studentId);
         } else {
-            // 否则调用自定义查询方法，进行模糊搜索（注意：可根据实际业务需求调整模糊查询条件）
-            scores = scoreRepository.findMyScoresByFilter(studentId, searchText, courseName);
+            scores = scoreRepository.findMyScoresByFilter(studentId, searchText);
         }
 
         System.out.println("查询到的成绩记录：" + scores);
-        // 将 Score 列表转换为 List<Map<String, Object>>
         List<Map<String, Object>> dataList = new ArrayList<>();
         for (Score s : scores) {
             Map<String, Object> m = new HashMap<>();
-            // 注意：这里使用的字段名称要和前端需要的字段保持一致，可根据实际情况进行调整
             m.put("scoreId", s.getScoreId());
             m.put("studentId", s.getStudent().getStudentId());
             m.put("studentNum", s.getStudent().getPerson().getNum());

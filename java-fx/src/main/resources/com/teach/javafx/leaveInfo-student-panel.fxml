@@ -11,20 +11,32 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.LeaveInfoStudentController"
-            style="-fx-background-color: #6378e8;">
+            style="-fx-background-color: #f5f5f5;">
     <top>
-        <VBox spacing="15" style="-fx-background-color: #eeeff3; -fx-padding: 15;">
+        <VBox spacing="15" style="-fx-background-color: #3f51b5; -fx-padding: 15;">
+            <effect>
+                <DropShadow radius="5" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+            </effect>
             <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label text="请假管理系统" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-                <children>
-                    <FlowPane alignment="TOP_LEFT" prefHeight="40.0" prefWidth="200.0">
-                        <children>
-                            <Button text="添加请假" onAction="#onAddLeaveClick" style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 8 15 8 15;"/>
-                            <Button text="删除" onAction="#onDeleteLeaveClick" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 8 15 8 15;"/>
-                        </children>
-                    </FlowPane>
-                </children>
+                <Label text="请假管理系统" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <FlowPane alignment="TOP_LEFT" prefHeight="40.0" prefWidth="200.0">
+                    <children>
+                        <Button text="添加请假" onAction="#onAddLeaveClick" style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15 8 15; -fx-cursor: hand;">
+                            <effect>
+                                <DropShadow radius="3" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+                            </effect>
+                        </Button>
+                        <Button text="删除" onAction="#onDeleteLeaveClick" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15 8 15; -fx-cursor: hand;">
+                            <effect>
+                                <DropShadow radius="3" color="rgba(0,0,0,0.2)" offsetX="0" offsetY="2"/>
+                            </effect>
+                        </Button>
+                    </children>
+                </FlowPane>
             </HBox>
         </VBox>
     </top>

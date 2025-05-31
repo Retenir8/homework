@@ -1,0 +1,180 @@
+/* 基础样式 */
+.root {
+    -fx-font-family: "Roboto", "Segoe UI", sans-serif;
+    -fx-base: #3f51b5;
+    -fx-background: #f5f5f5;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* 卡片阴影效果 */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-padding: 20;
+}
+
+/* 按钮基础样式 */
+.button {
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 2);
+    -fx-text-fill: white;
+}
+
+/* 按钮悬停效果 */
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 3);
+}
+
+/* 主要按钮 */
+.primary-button {
+    -fx-background-color: #3f51b5;
+}
+
+.primary-button:hover {
+    -fx-background-color: #303f9f;
+}
+
+/* 成功按钮 */
+.success-button {
+    -fx-background-color: #4caf50;
+}
+
+.success-button:hover {
+    -fx-background-color: #388e3c;
+}
+
+/* 信息按钮 */
+.info-button {
+    -fx-background-color: #2196f3;
+}
+
+.info-button:hover {
+    -fx-background-color: #1976d2;
+}
+
+/* 警告按钮 */
+.warning-button {
+    -fx-background-color: #ff9800;
+}
+
+.warning-button:hover {
+    -fx-background-color: #f57c00;
+}
+
+/* 危险按钮 */
+.danger-button {
+    -fx-background-color: #f44336;
+}
+
+.danger-button:hover {
+    -fx-background-color: #d32f2f;
+}
+
+/* 输入框样式 */
+.text-field, .text-area {
+    -fx-background-radius: 4;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4;
+    -fx-padding: 5 10;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #3f51b5;
+    -fx-border-width: 2;
+}
+
+/* 表格样式 */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: #3f51b5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-view .column-header-background {
+    -fx-background-radius: 8 8 0 0;
+}
+
+.table-view .table-cell {
+    -fx-padding: 10 5;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #bbdefb;
+}
+
+.table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: black;
+}
+
+/* 标签样式 */
+.label-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: #3f51b5;
+    -fx-font-weight: bold;
+}
+
+.label-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #616161;
+    -fx-font-weight: bold;
+}
+
+/* 工具栏样式 */
+.tool-bar {
+    -fx-background-color: #3f51b5;
+    -fx-padding: 15 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* 搜索框样式 */
+.search-field {
+    -fx-pref-width: 250px;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+}
+
+/* 响应式布局调整 */
+@media (max-width: 800px) {
+    .responsive-grid {
+        -fx-hgap: 10;
+        -fx-vgap: 10;
+    }
+
+    .responsive-grid .label {
+        -fx-font-size: 12px;
+    }
+
+    .responsive-grid .text-field {
+        -fx-pref-width: 120px;
+    }
+    /* 表格行悬停效果 */
+    .material-table .table-row-cell:filled:hover {
+        -fx-background-color: #e3f2fd;
+    }
+
+    /* 表格行选中效果 */
+    .material-table .table-row-cell:filled:selected {
+        -fx-background-color: #bbdefb;
+    }
+
+    .material-table .table-row-cell:filled:selected .table-cell {
+        -fx-text-fill: black;
+    }
+
+}

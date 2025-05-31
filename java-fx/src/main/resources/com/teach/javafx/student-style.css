@@ -1,0 +1,33 @@
+.input-label {
+    -fx-text-fill: #616161;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.material-button-raised {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 8 24;
+    -fx-background-radius: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);
+}
+
+.material-button-flat {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2196F3;
+    -fx-padding: 8 24;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 4;
+}
+
+.text-field, .combo-box, .date-picker {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .combo-box:focused, .date-picker:focused {
+    -fx-border-color: #2196F3;
+    -fx-effect: innershadow(gaussian, rgba(33,150,243,0.2), 8, 0, 0, 0);
+}

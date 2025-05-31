@@ -109,3 +109,4 @@ public class ScoreEditController {
         courseField.setText(name);
     }
 }
+

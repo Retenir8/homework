@@ -1,190 +1,202 @@
 package com.teach.javafx.controller;
 
+import com.teach.javafx.MainApplication;
+import com.teach.javafx.controller.base.MessageDialog;
+import com.teach.javafx.request.DataRequest;
+import com.teach.javafx.request.DataResponse;
+import com.teach.javafx.request.HttpRequestUtil;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.awt.*;
-import java.util.Date;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ActivityController {
-    // 定义活动数据模型
-    public static class Activity {
-        private String activityName;
-        private String organizer;
-        private String content;
-        private String location;
-        private Date startTime;
-        private Date endTime;
-        private String participant;
 
-        // 构造函数
-        public Activity(String activityName, String organizer, String content, String location,
-                        Date startTime, Date endTime, String participant) {
-            this.activityName = activityName;
-            this.organizer = organizer;
-            this.content = content;
-            this.location = location;
-            this.startTime = startTime;
-            this.endTime = endTime;
-            this.participant = participant;
-        }
+    @FXML private TextField titleTextField; //活动名称输入域
+    @FXML private TextField locationTextField; //活动位置输入域
+    @FXML private DatePicker startTimePicker;//开始时间信息
+    @FXML private DatePicker endTimePicker;//结束时间输入域，以上输入相关保存信息的地方
+    @FXML private ChoiceBox<String> searchTypeChoiceBox;//选择搜索方式
+    @FXML private TextField searchTextField;//搜索信息域
 
-        // Getter 和 Setter 方法
-        public String getActivityName() {
-            return activityName;
-        }
-
-        public void setActivityName(String activityName) {
-            this.activityName = activityName;
-        }
-
-        public String getOrganizer() {
-            return organizer;
-        }
-
-        public void setOrganizer(String organizer) {
-            this.organizer = organizer;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
-
-        public Date getStartTime() {
-            return startTime;
-        }
-
-        public void setStartTime(Date startTime) {
-            this.startTime = startTime;
-        }
-
-        public Date getEndTime() {
-            return endTime;
-        }
-
-        public void setEndTime(Date endTime) {
-            this.endTime = endTime;
-        }
-
-        public String getParticipant() {
-            return participant;
-        }
-
-        public void setParticipant(String participant) {
-            this.participant = participant;
-        }
-
-
-    }
-
-    // FXML 注入的控件
     @FXML
-    private TableView<Activity> dataTableView;
-    @FXML
-    private TableColumn<Activity, String> ActivityColumn;
-    @FXML
-    private TableColumn<Activity, String> organizerColumn;
-    @FXML
-    private TableColumn<Activity, String> contentColumn;
-    @FXML
-    private TableColumn<Activity, String> locationColumn;
-    @FXML
-    private TableColumn<Activity, Date> startTimeColumn;
-    @FXML
-    private TableColumn<Activity, Date> endTimeColumn;
-    @FXML
-    private TableColumn<Activity, String> participantColumn;
+    private TableView<Map<String, Object>> resultTableView;
+    @FXML private TableColumn<Map<String, Object>, String> activityTitleColumn;
+    @FXML private TableColumn<Map<String, Object>, String> startTimeColumn;
+    @FXML private TableColumn<Map<String, Object>, String> endTimeColumn;
+    @FXML private TableColumn<Map<String, Object>, String> locationColumn;//表格相关设置
 
-    // 数据列表
-    private ObservableList<Activity> activityList = FXCollections.observableArrayList();
+    private Integer activityId = null;
+    private ObservableList<Map<String,Object>> observableList = FXCollections.observableArrayList();
+    private ArrayList<Map> activityList = new ArrayList();
 
-    // 初始化方法
     @FXML
     public void initialize() {
-        // 设置表格列的绑定
-        ActivityColumn.setCellValueFactory(new PropertyValueFactory<>("activityName"));
-        organizerColumn.setCellValueFactory(new PropertyValueFactory<>("organizer"));
-        contentColumn.setCellValueFactory(new PropertyValueFactory<>("content"));
-        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-        participantColumn.setCellValueFactory(new PropertyValueFactory<>("participant"));
-
-        // 设置表格数据
-        dataTableView.setItems(activityList);
-
+        searchTypeChoiceBox.getItems().addAll("按活动搜索", "按学生搜索");
+        searchTypeChoiceBox.setValue("按学生搜索");
+        activityTitleColumn.setCellValueFactory(cell -> {
+            Object v = cell.getValue().get("title");
+            return new SimpleStringProperty(v == null ? "" : v.toString());
+        });
+        startTimeColumn.setCellValueFactory(cell -> {
+            Object v = cell.getValue().get("startTime");
+            return new SimpleStringProperty(v == null ? "" : v.toString());
+        });
+        endTimeColumn.setCellValueFactory(cell -> {
+            Object v = cell.getValue().get("endTime");
+            return new SimpleStringProperty(v == null ? "" : v.toString());
+        });
+        locationColumn.setCellValueFactory(cell -> {
+            Object v = cell.getValue().get("location");
+            return new SimpleStringProperty(v == null ? "" : v.toString());
+        });
+        loadInitialData();
     }
 
-    // 添加按钮的事件处理器
-    public void onAddButtonClick(ActionEvent event) {
-        // 弹出对话框获取用户输入的活动信息
-        // 这里可以使用 JavaFX 的 Dialog 或者自定义对话框
-        // 示例代码省略，假设用户输入了活动信息并保存到 activity 对象中
-        Activity newActivity = new Activity("新活动", "新组织者", "新内容", "新地点", null, null, "新参与者");
-        activityList.add(newActivity);
+    private void loadInitialData() {
+        DataResponse res = HttpRequestUtil.request("/api/activity/getActivityListAll", new DataRequest());
+        if (res != null && res.getCode() == 0) {
+            activityList = (ArrayList<Map>) res.getData();
+            observableList.setAll(activityList.stream()
+                    .map(map -> (Map<String, Object>) map)
+                    .collect(Collectors.toList()));
+        } else {
+            showAlert(Alert.AlertType.ERROR, "错误", "加载数据失败", "HTTP 错误: " + (res != null ? res.getCode() : "未知错误"));
+        }
+        resultTableView.setItems(observableList);
     }
 
-    // 修改按钮的事件处理器
-    public void onEditButtonClick(ActionEvent event) {
-        Activity selectedActivity = dataTableView.getSelectionModel().getSelectedItem();
-        if (selectedActivity == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "请先选择一个活动进行修改", ButtonType.OK);
-            alert.showAndWait();
+    @FXML
+    private void handleSave() {
+        String title = titleTextField.getText();
+        String location = locationTextField.getText();
+        LocalDate startTime = startTimePicker.getValue();
+        LocalDate endTime = endTimePicker.getValue();
+
+        if (title.isEmpty() || location.isEmpty() || startTime == null || endTime == null) {
+            showAlert(Alert.AlertType.ERROR, "错误", "输入错误", "请填写所有字段");
             return;
         }
-
-        System.out.println("选中的活动名称：" + selectedActivity.getActivityName());
-
-        // 弹出对话框获取用户输入
-        TextInputDialog dialog = new TextInputDialog(selectedActivity.getActivityName());
-        dialog.setTitle("修改活动");
-        dialog.setHeaderText("请输入新的活动名称");
-        dialog.setContentText("活动名称:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            selectedActivity.setActivityName(result.get());
-            System.out.println("修改后的活动名称：" + selectedActivity.getActivityName());
-            dataTableView.refresh(); // 刷新表格显示
+        if (endTime.isBefore(startTime)) {
+            showAlert(Alert.AlertType.ERROR, "错误", "输入错误", "结束时间不能早于开始时间");
+            return;
+        }
+        try {
+            Map<String,Object> form = new HashMap<>();
+            form.put("title", title);
+            form.put("location", location);
+            form.put("startTime", startTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
+            form.put("endTime", endTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
+            DataRequest req = new DataRequest();
+            req.add("activityId", activityId);
+            req.setData(form);
+            DataResponse res = HttpRequestUtil.request("/api/activity/creatActivity", req);
+            if (res != null && res.getCode() == 0) {
+                showAlert(Alert.AlertType.INFORMATION, "成功", "创建成功", "活动已成功创建");
+                loadInitialData();
+                titleTextField.clear();
+                locationTextField.clear();
+                startTimePicker.setValue(null);
+                endTimePicker.setValue(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "错误", "保存失败", e.getMessage());
         }
     }
 
-
-
-    // 删除按钮的事件处理器
-    public void onDeleteButtonClick(ActionEvent event) {
-        // 获取选中的活动
-        Activity selectedActivity = dataTableView.getSelectionModel().getSelectedItem();
-        if (selectedActivity == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "请先选择一个活动进行删除", ButtonType.OK);
-            alert.showAndWait();
-            return;
+    @FXML
+    private void handleDelete() {
+        try {
+            Map form = resultTableView.getSelectionModel().getSelectedItem();
+            DataRequest req = new DataRequest();
+            req.add("form", form);
+            DataResponse response = HttpRequestUtil.request("/api/activity/deleteActivity", req);
+            if (response.getCode() == 0) {
+                    showAlert(Alert.AlertType.INFORMATION, "成功", "删除成功", "记录已成功删除");
+                    loadInitialData();
+                    resultTableView.refresh();
+                    loadInitialData();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "错误", "删除失败", "错误: " + response.getCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "错误", "删除失败", e.getMessage());
         }
+    }
 
-        // 弹出确认对话框
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "确定要删除这个活动吗？", ButtonType.YES, ButtonType.NO);
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            activityList.remove(selectedActivity);
+    @FXML
+    private void handleInspect() throws IOException {
+        Map form = resultTableView.getSelectionModel().getSelectedItem();
+        DataRequest req = new DataRequest();
+        req.setData(form);
+        DataResponse res = HttpRequestUtil.request("/api/activity/searchByActivity", req);
+        if (res != null && res.getCode() == 0) {
+            List<Map<String,Object>> list = (List<Map<String, Object>>) res.getData();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/teach/javafx/activity-search-student.fxml"));
+            Parent root = loader.load();
+            ActivitySearchStudentController controller = loader.getController();
+            controller.setData(list);
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("查看参与学生");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(MainApplication.getMainStage()); // 设置父窗口
+            dialogStage.setScene(new Scene(root));
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
         }
+        else{
+            showAlert(Alert.AlertType.ERROR, "空", "没有学生", res.getMsg());;
+        }
+    }
+
+    @FXML
+    private void handleSearch() {
+            String url = "";
+            String choice = searchTypeChoiceBox.getValue();
+            if (choice.equals("按活动搜索")) {
+                url = "/api/activity/searchByActivity";
+            } else {
+                url = "/api/activity/searchByStudent";
+            }
+            Map<String, Object> form = new HashMap<>();
+            form.put("data", searchTextField.getText());
+            DataRequest req = new DataRequest();
+            req.add("activityId", activityId);
+            req.setData(form);
+            DataResponse res = HttpRequestUtil.request(url, req);
+        if (res != null && res.getCode() == 0) {
+            activityList = (ArrayList<Map>) res.getData();
+            observableList.setAll(activityList.stream()
+                    .map(map -> (Map<String, Object>) map)
+                    .collect(Collectors.toList()));
+        } else {
+            showAlert(Alert.AlertType.ERROR, "错误", "加载数据失败", "HTTP 错误: " + (res != null ? res.getCode() : "未知错误"));
+        }
+        resultTableView.setItems(observableList);
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

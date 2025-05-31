@@ -36,18 +36,17 @@ public class ScheduleController {
     }
 
     /**
-     * 更新课表单元格，前端传入 { "studentId": ..., "key": "c7", "value": "101" }
+     * 更新课表备注接口
+     * 前端传入的 JSON 应该包含 studentId 和 c1~c35 的键值对。
      */
-    @PostMapping("/updateCell")
-    public DataResponse updateCell(@RequestBody DataRequest dataRequest) {
-        Integer studentId = dataRequest.getInteger("studentId");
-        String key = dataRequest.getString("key");
-        String value = dataRequest.getString("value"); // 传输参数中用 "value" 表示新值
-        if (studentId == null || key == null) {
-            return CommonMethod.getReturnMessageError("缺少必要参数");
+    @PostMapping("/updateSchedule")
+    public DataResponse updateSchedule(@RequestBody DataRequest req) {
+        try {
+            scheduleService.updateSchedule(req);
+            return CommonMethod.getReturnMessageOK("更新课表成功");
+        } catch (Exception e) {
+            return CommonMethod.getReturnMessageError("更新课表失败：" + e.getMessage());
         }
-        Schedule schedule = scheduleService.updateScheduleCell(studentId, key, value);
-        return CommonMethod.getReturnData(schedule);
     }
 
 }

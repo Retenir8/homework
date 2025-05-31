@@ -175,16 +175,7 @@ public class TeacherController extends ToolController {
             clearPanel();
             return;
         }
-        personId = CommonMethod.getInteger(form, "personId");
-        teacherId = CommonMethod.getInteger(form, "teacherId");
-        DataRequest req = new DataRequest();
-        req.add("teacherId", teacherId);
-        DataResponse res = HttpRequestUtil.request("/api/teacher/getTeacherInfo", req);
-        if (res.getCode() != 0) {
-            MessageDialog.showDialog(res.getMsg());
-            return;
-        }
-        form = (Map) res.getData();
+
         numField.setText(CommonMethod.getString(form, "num"));
         nameField.setText(CommonMethod.getString(form, "name"));
         deptField.setText(CommonMethod.getString(form, "dept"));

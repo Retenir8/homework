@@ -44,7 +44,7 @@ public class CourseCenterController {
         course.setTeacher(teacherRepository.findByPersonNum(req.getString("teacherNum")));
         course.setTeacherName(req.getString("teacherName"));
         course.setLocation(req.getString("location"));
-        course.setCredit(req.getInteger("credit"));
+        course.setCredit(req.getDouble("credit"));
         course.setSchedule(req.getString("schedule"));
         course.setAssessmentType(req.getString("assessmentType"));
         System.out.println(course);
@@ -69,7 +69,7 @@ public class CourseCenterController {
             existing.setTeacher(teacherRepository.findByPersonNum(req.getString("teacherNum")));
             existing.setTeacherName(req.getString("teacherName"));
             existing.setLocation(req.getString("location"));
-            existing.setCredit(req.getInteger("credit"));
+            existing.setCredit(req.getDouble("credit"));
             existing.setSchedule(req.getString("schedule"));
             existing.setAssessmentType(req.getString("assessmentType"));
             System.out.println("保存成功");
@@ -91,19 +91,19 @@ public class CourseCenterController {
 
         return courseCenterService.chooseCourse(req);
     }
-
+    //查询课程
     @PostMapping("/searchCourses")
     public DataResponse searchCourses(@RequestBody DataRequest req) {
 
         return courseCenterService.searchCourses(req);
     }
-
+    //获取自己的课程
     @PostMapping("/getMyCourses")
     public DataResponse getMyCourses(@RequestBody DataRequest req) {
 
         return courseCenterService.getMyCourses(req);
     }
-
+    //更新课程时间用于更新课程表
     @PostMapping("/updateTimeSlots")
     public DataResponse updateTimeSlots(@RequestBody DataRequest request) {
         Integer courseId = request.getInteger("courseId");

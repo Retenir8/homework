@@ -7,21 +7,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
+import java.util.Map;
+
 
 public class ScheduleEditController {
 
-    // 左侧显示选课列表
-    @FXML
-    private ListView<String> courseListView;
     // 右侧编辑备注
     @FXML
     private TextArea remarkTextArea;
 
-    // 用于存储从外部设置的选课列表
-    private ObservableList<String> courseListData = FXCollections.observableArrayList();
-
-    // 用于返回选择的课程与备注
-    private String selectedCourse;
     private String remark;
 
     // 当前对话框所属的 Stage，通过外部注入
@@ -35,16 +29,6 @@ public class ScheduleEditController {
      */
     @FXML
     public void initialize() {
-        // 初始时可以设置 ListView 的数据源
-        courseListView.setItems(courseListData);
-    }
-
-    /**
-     * 在打开之前，由外部传入已选课程数据
-     */
-    public void setCourseListData(ObservableList<String> courseListData) {
-        this.courseListData = courseListData;
-        courseListView.setItems(this.courseListData);
     }
 
     /**
@@ -59,8 +43,6 @@ public class ScheduleEditController {
      */
     @FXML
     private void handleConfirm() {
-        // 取得 ListView 选中的课程
-        selectedCourse = courseListView.getSelectionModel().getSelectedItem();
         // 获取备注内容
         remark = remarkTextArea.getText();
 
@@ -85,12 +67,6 @@ public class ScheduleEditController {
         return okClicked;
     }
 
-    /**
-     * 返回用户选择的课程
-     */
-    public String getSelectedCourse() {
-        return selectedCourse;
-    }
 
     /**
      * 返回用户输入的备注

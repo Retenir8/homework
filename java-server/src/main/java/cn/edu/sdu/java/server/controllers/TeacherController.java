@@ -60,8 +60,7 @@ public class TeacherController {
     public DataResponse getTeacherPageData(@Valid @RequestBody DataRequest dataRequest) {
         return teacherService.getTeacherPageData(dataRequest);
     }
-    
-    
+
     
 
 }

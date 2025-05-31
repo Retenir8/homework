@@ -18,6 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class ScheduleController {
     // 用于记录当前正在编辑的单元格在 scheduleData 中的 key，如 "c7"
     private String currentEditingKey;
 
+    private ObservableList<Map<String, Object>> courseList = FXCollections.observableArrayList();
     @FXML
     public void initialize() {
         // 调用后端接口获取学生ID
@@ -58,9 +60,11 @@ public class ScheduleController {
         updateGrid();
     }
 
+
     /**
      * 根据 scheduleData 更新界面 GridPane 中各单元格的显示（如根据 fx:id 查找按钮并设置 text）
      */
+    @FXML
     private void updateGrid() {
         // 调用后端接口获取当前学生所有选课记录
         DataRequest req = new DataRequest();
@@ -72,7 +76,7 @@ public class ScheduleController {
         for (int i = 1; i <= 35; i++) {
             gridMap.put("c" + i, "-");
         }
-
+        // 1. 获取用户选课数据并更新 gridMap
         // 如果接口调用成功，则处理返回的课程数据
         if (res != null && res.getCode() == 0) {
             try {
@@ -109,6 +113,34 @@ public class ScheduleController {
             System.out.println("获取用户课程数据失败: " + (res != null ? res.getMsg() : "无响应"));
         }
 
+        // 2. 获取用户课表备注（schedule）数据，并合并到 gridMap 中
+        DataResponse scheduleRes = HttpRequestUtil.request("/api/schedule/getSchedule", req);
+        if (scheduleRes != null && scheduleRes.getCode() == 0) {
+            try {
+                // 返回的是一个 Map，键 "c1"～"c35" 保存着用户编辑的备注信息（字符串）
+                Map<String, Object> schedule = (Map<String, Object>) scheduleRes.getData();
+                for (int i = 1; i <= 35; i++) {
+                    String key = "c" + i;
+                    String remark = schedule.get(key) != null ? schedule.get(key).toString() : "";
+                    if (!remark.isEmpty()) {
+                        // 如果当前格子内容为默认 "-" 则仅显示备注；否则追加备注（用分隔符，比如换行）
+                        if (gridMap.get(key).equals("-")) {
+                            gridMap.put(key, remark);
+                        } else {
+                            gridMap.put(key, gridMap.get(key) + "\n备注: " + remark);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("数据转换异常(课表备注): " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("获取用户课表备注失败: " + (scheduleRes != null ? scheduleRes.getMsg() : "无响应"));
+        }
+
+        // 3. 更新 GridPane 单元格显示，假定 GridPane 内的单元格 fx:id 格式为 "cell_{period}_{day}"，
+        // 其中 period 为节次（1~5），day 为星期（1~7），映射公式：index = (day-1)*5 + period
         // 遍历 GridPane 的单元格：外层循环行（节次: period 1~5），内层循环列（天: day 1~7）
         for (int period = 1; period <= 5; period++) {
             for (int day = 1; day <= 7; day++) {
@@ -123,8 +155,6 @@ public class ScheduleController {
             }
         }
     }
-
-
 
 
 
@@ -160,7 +190,7 @@ public class ScheduleController {
             FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("schedule-edit-dialog.fxml"));
             Parent page = loader.load();
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("编辑课程");
+            dialogStage.setTitle("添加备注");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.initOwner(MainApplication.getMainStage());
             Scene scene = new Scene(page);
@@ -168,9 +198,7 @@ public class ScheduleController {
 
             // 获取编辑对话框的控制器，并注入相关数据
             ScheduleEditController controller = loader.getController();
-            // 示例数据：已选课程列表；实际可由后端获取或传入
-            ObservableList<String> myCourses = FXCollections.observableArrayList("课程A", "课程B", "课程C");
-            controller.setCourseListData(myCourses);
+
             controller.setDialogStage(dialogStage);
 
             // 显示对话框并等待
@@ -178,19 +206,18 @@ public class ScheduleController {
 
             // 当对话框关闭后，若用户点击确认，则从对话框中获取所选课程及备注并更新对应单元格
             if (controller.isOkClicked()) {
-                String chosenCourse = controller.getSelectedCourse();
                 String remark = controller.getRemark();
-                // 组合显示格式，根据需要自行定义（例如：课程及备注合并显示）
-                String cellValue = chosenCourse;
+                // 组合显示格式，例如 "课程名称 (备注)"；可根据需要调整格式
+                String cellValue = "";
                 if (remark != null && !remark.isEmpty()) {
-                    cellValue += " (" + remark + ")";
+                    cellValue += remark;
                 }
-                // 更新当前编辑单元格对应的数据，并刷新界面
-                scheduleData.put(currentEditingKey, cellValue);
-                updateGrid();
-                // 保存修改到后端
+                System.out.println(cellValue);
+                // 保存修改到后端：此处调用新接口 /api/schedule/updateSchedule
                 saveScheduleCell(currentEditingKey, cellValue);
+                updateGrid();
             }
+
         } catch (IOException e) {
             showAlert("错误", "加载编辑对话框失败: " + e.getMessage());
             e.printStackTrace();
@@ -198,18 +225,20 @@ public class ScheduleController {
     }
 
     /**
-     * 保存更新后的单元格数据到后端接口 /api/schedule/updateCell，
+     * 保存更新后的单元格数据到后端接口 /api/schedule/updateSchedule，
      * 请求中传入 studentId 和当前编辑单元格的键值对。
      */
     private void saveScheduleCell(String key, String value) {
         DataRequest req = new DataRequest();
         req.add("studentId", studentId);
         req.add(key, value);
-        DataResponse res = HttpRequestUtil.request("/api/schedule/updateCell", req);
+        // 调用新的接口 updateSchedule
+        DataResponse res = HttpRequestUtil.request("/api/schedule/updateSchedule", req);
         if (res == null || res.getCode() != 0) {
             showAlert("错误", "保存失败: " + (res != null ? res.getMsg() : "无响应"));
         }
     }
+
 
     /**
      * 弹出提示对话框

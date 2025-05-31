@@ -1,84 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.ScoreTableController">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.teach.javafx.controller.ScoreTableController"
+            style="-fx-background-color: #f5f5f5;">
+
     <top>
-        <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0">
-            <children>
-                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-                <FlowPane alignment="TOP_RIGHT" prefHeight="104.0" prefWidth="504.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Label prefHeight="15.0" prefWidth="64.0" text="学生姓名"> <FlowPane.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </FlowPane.margin>
-                        </Label>
-                        <TextField fx:id="studentNameTextField" prefHeight="23.0" prefWidth="128.0" promptText="输入学生姓名或学号"> <FlowPane.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </FlowPane.margin>
-                        </TextField>
-                        <Label text="选择学生"> <FlowPane.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </FlowPane.margin>
-                        </Label>
-                        <ComboBox fx:id="studentComboBox">
-                            <FlowPane.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </FlowPane.margin>
-                        </ComboBox>
-                        <Label prefHeight="15.0" prefWidth="58.0" text="课程名称"> <FlowPane.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </FlowPane.margin>
-                        </Label>
-                        <TextField fx:id="courseNameTextField" prefHeight="23.0" prefWidth="128.0" promptText="输入课程名称或课程号"> <FlowPane.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </FlowPane.margin>
-                        </TextField>
-                        <Label text="选择课程"> <FlowPane.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </FlowPane.margin>
-                        </Label>
-                        <ComboBox fx:id="courseComboBox">
-                            <FlowPane.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </FlowPane.margin>
-                        </ComboBox>
-                        <Button mnemonicParsing="false" onAction="#onQueryButtonClick" text="查询">
-                            <FlowPane.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </FlowPane.margin>
-                        </Button>
-                    </children>
-                </FlowPane>
-            </children>
-            <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-            </padding>
-        </HBox>
+        <VBox spacing="10" style="-fx-background-color: #3f51b5;">
+            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 12 24 12 24;">
+                <Label text="成绩管理系统" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Button text="查询" onAction="#onQueryButtonClick" style="-fx-background-color: #ff9800; -fx-text-fill: white; -fx-padding: 3 15; -fx-background-radius: 15;"/>
+            </HBox>
+
+            <Separator style="-fx-background-color: #ECF0F1;"/>
+
+            <GridPane hgap="15" vgap="10" style="-fx-padding: 16 24 16 24;">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                </columnConstraints>
+
+                <rowConstraints>
+                    <RowConstraints prefHeight="40"/>
+                </rowConstraints>
+
+                <Label text="学生筛选" style="-fx-text-fill: white;"/>
+                <TextField fx:id="studentNameTextField" promptText="姓名/学号" GridPane.columnIndex="1"
+                           style="-fx-background-radius: 15; -fx-padding: 3 10;"/>
+                <ComboBox fx:id="studentComboBox" GridPane.columnIndex="2" style="-fx-background-radius: 15;"/>
+
+                <Label text="课程筛选" style="-fx-text-fill: white;" GridPane.rowIndex="1"/>
+                <TextField fx:id="courseNameTextField" promptText="课程名/课程号" GridPane.columnIndex="1"
+                           GridPane.rowIndex="1" style="-fx-background-radius: 15; -fx-padding: 3 10;"/>
+                <ComboBox fx:id="courseComboBox" GridPane.columnIndex="2" GridPane.rowIndex="1"
+                          style="-fx-background-radius: 15;"/>
+            </GridPane>
+        </VBox>
     </top>
+
     <center>
-        <TableView fx:id="dataTableView" prefHeight="423.0" prefWidth="793.0">
+        <TableView fx:id="dataTableView" style="-fx-background-color: transparent;">
             <columns>
-                <TableColumn fx:id="studentNumColumn" prefWidth="120.0" text="学号" />
-                <TableColumn fx:id="studentNameColumn" prefWidth="90.0" text="姓名" />
-                <TableColumn fx:id="classNameColumn" prefWidth="140.0" text="班级" />
-                <TableColumn fx:id="courseNumColumn" prefWidth="120.0" text="课程号" />
-                <TableColumn fx:id="courseNameColumn" prefWidth="140.0" text="课程名" />
+                <TableColumn fx:id="studentNumColumn" prefWidth="100.0" text="学号" />
+                <TableColumn fx:id="studentNameColumn" prefWidth="70.0" text="姓名" />
+                <TableColumn fx:id="classNameColumn" prefWidth="75.0" text="班级" />
+                <TableColumn fx:id="courseNumColumn" prefWidth="75.0" text="课程号" />
+                <TableColumn fx:id="courseNameColumn" prefWidth="75.0" text="课程名" />
                 <TableColumn fx:id="creditColumn" prefWidth="60.0" text="学分" />
-                <TableColumn fx:id="markColumn" prefWidth="60.0" text="成绩" />
-                <TableColumn fx:id="rankingColumn" prefWidth="60.0" text="排名" />
-                <TableColumn fx:id="editColumn" prefWidth="60.0" text="操作" />
+                <TableColumn fx:id="markColumn" prefWidth="95.0" text="成绩" />
+                <TableColumn fx:id="editColumn" prefWidth="125.0" text="操作" />
             </columns>
+            <style>
+                -fx-table-cell-border-color: transparent;
+                -fx-table-header-border-color: transparent;
+            </style>
         </TableView>
     </center>
 </BorderPane>

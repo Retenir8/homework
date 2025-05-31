@@ -64,9 +64,9 @@ public interface ScoreRepository extends JpaRepository<Score, Integer> {
 
     @Query("SELECT s FROM Score s " +
             "WHERE s.student.studentId = :studentId " +
-            "AND (:searchText IS NULL OR :searchText = '' OR s.course.courseName LIKE %:searchText%) " +
-            "AND (:courseName IS NULL OR :courseName = '' OR s.course.courseName = :courseName)")
+            "AND (:searchText IS NULL OR :searchText = '' OR s.course.courseName LIKE %:searchText%) ")
     List<Score> findMyScoresByFilter(@Param("studentId") Integer studentId,
-                                     @Param("searchText") String searchText,
-                                     @Param("courseName") String courseName);
+                                     @Param("searchText") String searchText);
+
+    void deleteByStudentStudentId(Integer studentId);
 }

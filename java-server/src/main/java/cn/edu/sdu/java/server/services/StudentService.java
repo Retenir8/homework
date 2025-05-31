@@ -26,30 +26,49 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
 @Service
 public class StudentService {
     private static final Logger log = LoggerFactory.getLogger(StudentService.class);
-    private final PersonRepository personRepository;  //人员数据操作自动注入
-    private final StudentRepository studentRepository;  //学生数据操作自动注入
-    private final UserRepository userRepository;  //学生数据操作自动注入
-    private final UserTypeRepository userTypeRepository; //用户类型数据操作自动注入
-    private final PasswordEncoder encoder;  //密码服务自动注入
-    private final FeeRepository feeRepository;  //消费数据操作自动注入
-    private final FamilyMemberRepository familyMemberRepository;
-    private final SystemService systemService;
+
+    // 账户和人员相关
+    private final PersonRepository personRepository;
+    private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
+    private final UserTypeRepository userTypeRepository;
+    private final PasswordEncoder encoder;
+    private final FeeRepository feeRepository;
+    // 课程选课相关（学生与课程间的中间表）
+    private final StudentCourseRepository studentCourseRepository;
+    // 其它业务模块相关（删除学生时需要删除关联的记录）
+    private final LeaveInfoRepository leaveInfoRepository;
+    private final ScoreRepository scoreRepository;
+    private final ScheduleRepository scheduleRepository;
+
     @Autowired
-    public StudentService(PersonRepository personRepository, StudentRepository studentRepository, UserRepository userRepository, UserTypeRepository userTypeRepository, PasswordEncoder encoder,  FeeRepository feeRepository, FamilyMemberRepository familyMemberRepository, SystemService systemService) {
+    public StudentService(PersonRepository personRepository,
+                          StudentRepository studentRepository,
+                          UserRepository userRepository,
+                          UserTypeRepository userTypeRepository,
+                          PasswordEncoder encoder,
+                          FeeRepository feeRepository,
+                          StudentCourseRepository studentCourseRepository,
+                          LeaveInfoRepository leaveInfoRepository,
+                          ScoreRepository scoreRepository,
+                          ScheduleRepository scheduleRepository) {
         this.personRepository = personRepository;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.userTypeRepository = userTypeRepository;
         this.encoder = encoder;
         this.feeRepository = feeRepository;
-        this.familyMemberRepository = familyMemberRepository;
-        this.systemService = systemService;
+        this.studentCourseRepository = studentCourseRepository;
+        this.leaveInfoRepository = leaveInfoRepository;
+        this.scoreRepository = scoreRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
     public DataResponse getStudentByNum(DataRequest dataRequest) {
@@ -93,36 +112,54 @@ public class StudentService {
 
 
 
-    public Map<String,Object> getMapFromStudent(Student s) {
-        Map<String,Object> m = new HashMap<>();
-        Person p;
-        if(s == null)
-            return m;
-        m.put("major",s.getMajor());
-        m.put("className",s.getClassName());
-        p = s.getPerson();
-        if(p == null)
-            return m;
-        m.put("studentId", s.getStudentId());
-        m.put("personId", p.getPersonId());
-        m.put("num",p.getNum());
-        m.put("name",p.getName());
-        m.put("dept",p.getDept());
-        m.put("card",p.getCard());
-        String gender = p.getGender();
-        m.put("gender",gender);
-        m.put("genderName", ComDataUtil.getInstance().getDictionaryLabelByValue("XBM", gender)); //性别类型的值转换成数据类型名
-        m.put("birthday", p.getBirthday());  //时间格式转换字符串
-        m.put("email",p.getEmail());
-        m.put("phone",p.getPhone());
-        m.put("address",p.getAddress());
-        m.put("introduce",p.getIntroduce());
+    public Map<String, Object> getMapFromStudent(Student s) {
+        Map<String, Object> m = new HashMap<>();
+        // 默认值：确保所有键都存在，即使初始为 null
+        m.put("studentId", "");
+        m.put("personId", "");
+        m.put("num", "");
+        m.put("name", "");
+        m.put("major", "");
+        m.put("className", "");
+        m.put("card", "");
+        m.put("gender", "");
+        m.put("genderName", "");
+        m.put("birthday", ""); // 默认空字符串，等待格式化
+        m.put("email", "");
+        m.put("phone", "");
+        m.put("address", "");
+        m.put("introduce", "");
+        m.put("dept", ""); // Person的dept
+
+        if (s != null) {
+            // 先填充 Student 自身的属性
+            m.put("studentId", s.getStudentId() != null ? s.getStudentId().toString() : ""); // ID也转为String
+            m.put("major", s.getMajor() != null ? s.getMajor() : "");
+            m.put("className", s.getClassName() != null ? s.getClassName() : "");
+
+            Person p = s.getPerson();
+            System.out.println(p.getName());
+            // 填充 Person 的属性
+            m.put("personId", p.getPersonId() != null ? p.getPersonId().toString() : ""); // ID转为String
+            m.put("num", p.getNum() != null ? p.getNum() : "");
+            m.put("name", p.getName() != null ? p.getName() : "");
+            m.put("dept", p.getDept() != null ? p.getDept() : ""); // 假设 Person 也有 dept
+            m.put("card", p.getCard() != null ? p.getCard() : "");
+
+            String gender = p.getGender();
+            m.put("gender", gender != null ? gender : "");
+            m.put("genderName", (gender != null && ComDataUtil.getInstance() != null) ?
+                    ComDataUtil.getInstance().getDictionaryLabelByValue("XBM", gender) : "");
+
+            m.put("birthday", p.getBirthday());
+            m.put("email", p.getEmail() != null ? p.getEmail() : "");
+            m.put("phone", p.getPhone() != null ? p.getPhone() : "");
+            m.put("address", p.getAddress() != null ? p.getAddress() : "");
+            m.put("introduce", p.getIntroduce() != null ? p.getIntroduce() : "");
+        }
+        System.out.println(m);
         return m;
     }
-
-    //Java 对象的注入 我们定义的这下Java的操作对象都不能自己管理是由有Spring框架来管理的， StudentController 中要使用StudentRepository接口的实现类对象，
-    // 需要下列方式注入，否则无法使用， studentRepository 相当于StudentRepository接口实现对象的一个引用，由框架完成对这个引用的赋值，
-    // StudentController中的方法可以直接使用
 
     public List<Map<String,Object>> getStudentMapList(String numName) {
         List<Map<String,Object>> dataList = new ArrayList<>();
@@ -144,19 +181,44 @@ public class StudentService {
 
 
     public DataResponse studentDelete(DataRequest dataRequest) {
-        Integer personId = dataRequest.getInteger("personId");//获取student_id值
+        Integer personId ;//获取student_id值
         Integer studentId = dataRequest.getInteger("studentId");
+        System.out.println(studentId);
         Student s = null;
         Optional<Student> op;
         if (studentId != null && studentId > 0) {
+
             op = studentRepository.findById(studentId);   //查询获得实体对象
             if(op.isPresent()) {
                 s = op.get();
-                Optional<User> uOp = userRepository.findById(personId); //查询对应该学生的账户
+                // 1. 删除选课记录（中间表数据）
+                studentCourseRepository.deleteByStudent_StudentId(studentId);
+
+                // 2. 删除请假记录
+                leaveInfoRepository.deleteByStudentStudentId(studentId);
+
+                // 3. 删除成绩记录
+                scoreRepository.deleteByStudentStudentId(studentId);
+
+                // 4. 删除荣誉关联（中间表），即只清空学生实体中保存的荣誉集合
+                if (s.getHonors() != null) {
+                    s.getHonors().clear();
+                }
+
+                // 5. 删除活动关联（中间表），清空学生实体中保存的活动集合
+                if (s.getActivities() != null) {
+                    s.getActivities().clear();
+                }
+
+                // 6. 删除课程表记录
+                scheduleRepository.deleteByStudentId(s.getStudentId());
+
+                personId = studentRepository.findById(studentId).get().getPerson().getPersonId();
+                Optional<User> uOp = userRepository.findByPersonPersonId(personId); //查询对应该学生的账户
                 //删除对应该学生的账户
                 uOp.ifPresent(userRepository::delete);
-                Person p = s.getPerson();
                 studentRepository.delete(s);    //首先数据库永久删除学生信息
+                Person p = s.getPerson();
                 personRepository.delete(p);   // 然后数据库永久删除学生信息
             }
         }
@@ -165,11 +227,11 @@ public class StudentService {
 
 
     public DataResponse getStudentInfo(DataRequest dataRequest) {
-        Integer studentId = dataRequest.getInteger("studentId");
+        String num = dataRequest.getString("num");
         Student s = null;
         Optional<Student> op;
-        if (studentId != null) {
-            op = studentRepository.findById(studentId); //根据学生主键从数据库查询学生的信息
+        if (num != null) {
+            op = studentRepository.findByPersonNum(num); //根据学生主键从数据库查询学生的信息
             if (op.isPresent()) {
                 s = op.get();
             }
@@ -177,174 +239,97 @@ public class StudentService {
         return CommonMethod.getReturnData(getMapFromStudent(s)); //这里回传包含学生信息的Map对象
     }
 
-    @Transactional // 确保事务一致性
+    @Transactional
     public DataResponse studentEditSave(DataRequest dataRequest) {
-        System.out.println("--- Entering studentEditSave method ---");
-        System.out.println("Received dataRequest: " + dataRequest.getData());
-
-        // 从请求中获取 studentId 和 form 数据
-        Map<String, Object> form = dataRequest.getMap("form"); // 参数获取Map对象
+        // 获取前端提交的表单数据
+        Map<String, Object> form = dataRequest.getMap("form");
         if (form == null) {
             return CommonMethod.getReturnMessageError("请求数据为空！");
         }
-        // 确保从 form 中正确获取 studentId
-        Integer studentId = CommonMethod.getInteger(form, "studentId"); // 使用 CommonMethod 或直接从 Map 中获取
 
-        System.out.println("Form data: " + form); // 打印 form 数据
-        System.out.println("Extracted studentId from form: " + studentId); // 打印提取到的 studentId
-
-        String num = CommonMethod.getString(form,"num");  //Map 获取属性的值
+        // 从表单中获取 studentId 和学号（num）
+        Integer studentId = CommonMethod.getInteger(form, "studentId");
+        String num = CommonMethod.getString(form, "num");
         if (num == null || num.trim().isEmpty()) {
-            return CommonMethod.getReturnMessageError("学号不能为空！"); // 学号为空校验
+            return CommonMethod.getReturnMessageError("学号不能为空！");
         }
 
-        Student s = null; // 学生实体
-        Person p = null;  // 人员实体
-        User u = null;    // 用户实体
+        Student student = null;
+        Person person = null;
+        User user = null;
 
-        Integer personId = CommonMethod.getInteger(form, "personId"); // 从 form 中获取 personId
-
-        // 现在这里的逻辑应该是正确的，因为 studentId 应该有正确的值了
+        // 如果 studentId 有值则认为是修改，否则是新增
         if (studentId != null) {
-            Optional<Student> op = studentRepository.findById(studentId);
-            if (op.isPresent()) {
-                s = op.get();
-                p = s.getPerson(); // 获取关联的 Person
-                personId = p.getPersonId(); // 确保 personId 是从数据库获取的最新值
-                // --- 调试点 B ---
-                System.out.println("Existing student found. studentId=" + studentId + ", personId=" + personId + ", num=" + p.getNum());
+            Optional<Student> studentOpt = studentRepository.findById(studentId);
+            if (studentOpt.isPresent()) {
+                student = studentOpt.get();
+                person = student.getPerson();
             } else {
-                System.err.println("Error: Student with ID " + studentId + " not found despite being passed.");
                 return CommonMethod.getReturnMessageError("学生信息不存在，无法修改！");
             }
-        } else {
-            // --- 调试点 C ---
-            System.out.println("This is a new student creation scenario.");
         }
 
-        // --- 调试点 D ---
-        System.out.println("Checking for existing person with num: " + num);
-        Optional<Person> existingPersonWithNum = personRepository.findByNum(num);
-
-        if (existingPersonWithNum.isPresent()) {
-            Person existingP = existingPersonWithNum.get();
-            // --- 调试点 E ---
-            System.out.println("Found existing Person with same num. Its personId: " + existingP.getPersonId() + ", its num: " + existingP.getNum());
-            System.out.println("Current Person's personId (p.getPersonId()): " + (p != null ? p.getPersonId() : "null"));
-            System.out.println("Are their IDs equal? " + (p != null && existingP.getPersonId().equals(p.getPersonId())));
-
-            if (s == null || !existingP.getPersonId().equals(p.getPersonId())) {
-                // --- 调试点 F ---
-                System.out.println("Triggering unique number error. s == null is " + (s == null) + ", !existingP.getPersonId().equals(p.getPersonId()) is " + (!existingP.getPersonId().equals(p.getPersonId())));
+        // 检查学号是否已被其他人占用
+        Optional<Person> existPersonOpt = personRepository.findByNum(num);
+        if (existPersonOpt.isPresent()) {
+            Person existPerson = existPersonOpt.get();
+            if (person == null || !existPerson.getPersonId().equals(person.getPersonId())) {
                 return CommonMethod.getReturnMessageError("该学号已被其他用户占用，不能添加或修改！");
             }
         }
 
+        // 新增学生逻辑
+        if (student == null) {
+            person = new Person();
+            person.setNum(num);
+            person.setType("1");
+            personRepository.save(person);
 
-        // 3. 处理新增学生逻辑
-        if (s == null) { // 意味着是新增操作
-            System.out.println("--- Creating new student ---");
-            p = new Person(); // 新建 Person 实体
-            p.setNum(num);
-            p.setType("1"); // 设置人员类型为学生 ('1' 通常代表学生，请根据你的业务定义确认)
-            try {
-                personRepository.save(p); // 保存新的 Person 记录
-                personId = p.getPersonId(); // 获取新生成的 PersonId
-                System.out.println("New Person saved with ID: " + personId);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return CommonMethod.getReturnMessageError("保存人员信息失败: " + e.getMessage());
-            }
-
-            // 创建新用户
-            u = new User();
-            u.setPerson(p); // 将 User 与新创建的 Person 关联
-            u.setUserName(num); // 用户名设置为学号
-            String defaultPassword = encoder.encode("123456"); // 默认密码加密
-            u.setPassword(defaultPassword);
-            System.out.println("User password encrypted.");
-
-            // 获取用户类型 (ROLE_STUDENT)
+            user = new User();
+            user.setPerson(person);
+            user.setUserName(num);
+            user.setPassword(encoder.encode("123456")); // 默认密码“123456”
             UserType userType = userTypeRepository.findByName("ROLE_STUDENT");
             if (userType == null) {
-                System.err.println("Error: UserType 'ROLE_STUDENT' not found in database.");
                 return CommonMethod.getReturnMessageError("系统配置错误：用户类型 'ROLE_STUDENT' 未找到。");
             }
-            u.setUserType(userType);
-            System.out.println("UserType 'ROLE_STUDENT' assigned to new user.");
+            user.setUserType(userType);
+            userRepository.save(user);
 
-            try {
-                userRepository.save(u); // 保存新的 User 记录
-                System.out.println("New User saved for Person ID: " + personId);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // 如果保存用户失败，考虑回滚Person的创建，或者清理数据
-                personRepository.delete(p); // 尝试回滚已创建的Person
-                return CommonMethod.getReturnMessageError("创建用户失败 (学号: " + num + ")：" + e.getMessage());
-            }
-
-            s = new Student(); // 新建 Student 实体
-            s.setPerson(p); // 将 Student 与新创建的 Person 关联
-            System.out.println("New Student entity created.");
-
+            student = new Student();
+            student.setPerson(person);
         } else {
-            // 4. 处理修改学生逻辑 (p 和 personId 已经在上面获取)
-            System.out.println("--- Modifying existing student (ID: " + studentId + ") ---");
-            // 检查学号是否被修改，如果修改了，需要更新关联的 User 的用户名
-            if (!num.equals(p.getNum())) {
-                Optional<User> uOp = userRepository.findByPersonPersonId(personId);
-                if (uOp.isPresent()) {
-                    u = uOp.get();
-                    u.setUserName(num); // 更新用户名
-                    try {
-                        userRepository.save(u); // 保存更新的 User 记录
-                        System.out.println("User username updated for Person ID: " + personId + " to: " + num);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return CommonMethod.getReturnMessageError("更新用户账号失败: " + e.getMessage());
-                    }
-                } else {
-                    System.err.println("Warning: No user found for Person ID: " + personId + ". Cannot update username.");
+            // 修改逻辑：若学号发生变化，则更新关联的 User 的用户名，同时更新 Person 中的 num
+            if (!num.equals(person.getNum())) {
+                Optional<User> userOpt = userRepository.findByPersonPersonId(person.getPersonId());
+                if (userOpt.isPresent()) {
+                    user = userOpt.get();
+                    user.setUserName(num);
+                    userRepository.save(user);
                 }
-                p.setNum(num); // 更新 Person 的学号
+                person.setNum(num);
             }
         }
 
-        // 5. 更新 Person 实体属性
-        p.setName(CommonMethod.getString(form, "name"));
-        p.setDept(CommonMethod.getString(form, "dept"));
-        p.setCard(CommonMethod.getString(form, "card"));
-        p.setGender(CommonMethod.getString(form, "gender"));
-        p.setBirthday(CommonMethod.getString(form, "birthday"));
-        p.setEmail(CommonMethod.getString(form, "email"));
-        p.setPhone(CommonMethod.getString(form, "phone"));
-        p.setAddress(CommonMethod.getString(form, "address"));
-        System.out.println("Person attributes updated.");
+        // 更新 Person 的其它属性
+        person.setName(CommonMethod.getString(form, "name"));
+        person.setDept(CommonMethod.getString(form, "dept"));
+        person.setCard(CommonMethod.getString(form, "card"));
+        person.setGender(CommonMethod.getString(form, "gender"));
+        person.setBirthday(CommonMethod.getString(form, "birthday"));
+        person.setEmail(CommonMethod.getString(form, "email"));
+        person.setPhone(CommonMethod.getString(form, "phone"));
+        person.setAddress(CommonMethod.getString(form, "address"));
+        personRepository.save(person);
 
-        try {
-            personRepository.save(p); // 保存修改后的人员信息
-            System.out.println("Person saved: " + p.getPersonId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonMethod.getReturnMessageError("保存人员信息失败: " + e.getMessage());
-        }
+        // 更新 Student 的属性
+        student.setMajor(CommonMethod.getString(form, "major"));
+        student.setClassName(CommonMethod.getString(form, "className"));
+        studentRepository.save(student);
 
-        // 6. 更新 Student 实体属性
-        s.setMajor(CommonMethod.getString(form, "major"));
-        s.setClassName(CommonMethod.getString(form, "className"));
-        System.out.println("Student attributes updated.");
-
-        try {
-            studentRepository.save(s); // 保存修改后的学生信息
-            System.out.println("Student saved: " + s.getStudentId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonMethod.getReturnMessageError("保存学生信息失败: " + e.getMessage());
-        }
-
-        System.out.println("--- Exiting studentEditSave method. Success. ---");
-        return CommonMethod.getReturnData(s.getStudentId()); // 将 studentId 返回前端
+        return CommonMethod.getReturnData(student.getStudentId());
     }
+
 
     public List<Map<String,Object>> getStudentScoreList(List<Score> sList) {
         List<Map<String,Object>> list = new ArrayList<>();
@@ -366,56 +351,6 @@ public class StudentService {
         }
         return list;
     }
-
-
-    public List<Map<String,Object>> getStudentMarkList(List<Score> sList) {
-        String[] title = {"优", "良", "中", "及格", "不及格"};
-        int[] count = new int[5];
-        List<Map<String,Object>> list = new ArrayList<>();
-        if (sList == null || sList.isEmpty())
-            return list;
-        Map<String,Object> m;
-        Course c;
-        for (Score s : sList) {
-            c = s.getCourse();
-            if (s.getMark() >= 90)
-                count[0]++;
-            else if (s.getMark() >= 80)
-                count[1]++;
-            else if (s.getMark() >= 70)
-                count[2]++;
-            else if (s.getMark() >= 60)
-                count[3]++;
-            else
-                count[4]++;
-        }
-        for (int i = 0; i < 5; i++) {
-            m = new HashMap<>();
-            m.put("name", title[i]);
-            m.put("title", title[i]);
-            m.put("value", count[i]);
-            list.add(m);
-        }
-        return list;
-    }
-
-
-    public List<Map<String,Object>> getStudentFeeList(Integer personId) {
-        List<Fee> sList = feeRepository.findListByStudent(personId);  // 查询某个学生消费记录集合
-        List<Map<String,Object>> list = new ArrayList<>();
-        if (sList == null || sList.isEmpty())
-            return list;
-        Map<String,Object> m;
-        Course c;
-        for (Fee s : sList) {
-            m = new HashMap<>();
-            m.put("title", s.getDay());
-            m.put("value", s.getMoney());
-            list.add(m);
-        }
-        return list;
-    }
-
 
 
 
@@ -563,80 +498,6 @@ public class StudentService {
         return CommonMethod.getReturnData(data);
     }
 
-
-
-    /*
-        FamilyMember
-     */
-    public DataResponse getFamilyMemberList(DataRequest dataRequest) {
-        Integer studentId = dataRequest.getInteger("studentId");
-        List<FamilyMember> fList = familyMemberRepository.findByStudentStudentId(studentId);
-        List<Map<String,Object>> dataList = new ArrayList<>();
-        Map<String,Object> m;
-        if (fList != null) {
-            for (FamilyMember f : fList) {
-                m = new HashMap<>();
-                m.put("memberId", f.getMemberId());
-                m.put("personId", f.getStudent().getStudentId());
-                m.put("relation", f.getRelation());
-                m.put("name", f.getName());
-                m.put("gender", f.getGender());
-                m.put("age", f.getAge()+"");
-                m.put("unit", f.getUnit());
-                dataList.add(m);
-            }
-        }
-        return CommonMethod.getReturnData(dataList);
-    }
-
-    public DataResponse familyMemberSave(DataRequest dataRequest) {
-        Map<String,Object> form = dataRequest.getMap("form");
-        Integer studentId = CommonMethod.getInteger(form,"studentId");
-        Integer memberId = CommonMethod.getInteger(form,"memberId");
-        Optional<FamilyMember> op;
-        FamilyMember f = null;
-        if(memberId != null) {
-            op = familyMemberRepository.findById(memberId);
-            if(op.isPresent()) {
-                f = op.get();
-            }
-        }
-        if(f== null) {
-            f = new FamilyMember();
-            assert studentId != null;
-            f.setStudent(studentRepository.findById(studentId).get());
-        }
-        f.setRelation(CommonMethod.getString(form,"relation"));
-        f.setName(CommonMethod.getString(form,"name"));
-        f.setGender(CommonMethod.getString(form,"gender"));
-        f.setAge(CommonMethod.getInteger(form,"age"));
-        f.setUnit(CommonMethod.getString(form,"unit"));
-        familyMemberRepository.save(f);
-        return CommonMethod.getReturnMessageOK();
-    }
-
-    public DataResponse familyMemberDelete(DataRequest dataRequest) {
-        Integer memberId = dataRequest.getInteger("memberId");
-        Optional<FamilyMember> op;
-        op = familyMemberRepository.findById(memberId);
-        op.ifPresent(familyMemberRepository::delete);
-        return CommonMethod.getReturnMessageOK();
-    }
-
-
-    public DataResponse importFeeDataWeb(Map<String,Object> request,MultipartFile file) {
-        Integer studentId = CommonMethod.getInteger(request, "studentId");
-        try {
-            String msg= importFeeData(studentId,file.getInputStream());
-            if(msg == null)
-                return CommonMethod.getReturnMessageOK();
-            else
-                return CommonMethod.getReturnMessageError(msg);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        return CommonMethod.getReturnMessageError("上传错误！");
-    }
 
     public DataResponse getMyStudentId(String userName) {
         Integer studentId = studentRepository.findByStudentNum(userName).get().getStudentId();

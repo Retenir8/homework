@@ -171,20 +171,11 @@ public class StudentController extends ToolController {
     protected void changeStudentInfo() {
         System.out.println("准备修改");
         Map<String,Object> form = dataTableView.getSelectionModel().getSelectedItem();
+        System.out.println(form);
         if (form == null) {
             clearPanel();
             return;
         }
-        personId = CommonMethod.getInteger(form, "personId");
-        studentId = CommonMethod.getInteger(form, "studentId");
-        DataRequest req = new DataRequest();
-        req.add("studentId", studentId);
-        DataResponse res = HttpRequestUtil.request("/api/student/getStudentInfo", req);
-        if (res.getCode() != 0) {
-            MessageDialog.showDialog(res.getMsg());
-            return;
-        }
-        form = (Map) res.getData();
         numField.setText(CommonMethod.getString(form, "num"));
         nameField.setText(CommonMethod.getString(form, "name"));
         deptField.setText(CommonMethod.getString(form, "dept"));

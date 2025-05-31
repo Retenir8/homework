@@ -1,0 +1,105 @@
+/* 基础配色 */
+.root {
+    -fx-primary-color: #2C3E50;
+    -fx-secondary-color: #3498DB;
+    -fx-background-color: #F5F6FA;
+    -fx-text-color: #2C3E50;
+}
+
+/* 输入框样式 */
+.material-input {
+    -fx-background-color: white;
+    -fx-border-color: #BDC3C7;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0.5, 0, 1);
+}
+
+.material-input:focused {
+    -fx-border-color: #3498DB;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.2), 6, 0.5, 0, 1);
+}
+
+/* 按钮样式 */
+.primary-button {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0.5, 0, 1);
+}
+
+.primary-button:hover {
+    -fx-background-color: #2980B9;
+}
+
+/* 表格样式 */
+.material-table {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+}
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 12 16;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #F8F9FA;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #ECF0F1;
+}
+
+.action-column {
+    -fx-alignment: CENTER;
+}
+
+/* 下拉框样式 */
+.material-combo {
+    -fx-background-color: white;
+    -fx-border-color: #BDC3C7;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0.5, 0, 1);
+}
+
+/* 标签样式 */
+.filter-label {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+/* 数值列特殊样式 */
+.numeric-column {
+    -fx-alignment: CENTER-RIGHT;
+    -fx-padding: 12 16;
+}
+
+/* 表格优化 */
+.material-table .column-header {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.material-table .column-header-background {
+    -fx-background-radius: 8 8 0 0;
+}
+
+/* 响应式布局调整 */
+@media (max-width: 800px) {
+    .filter-label {
+        -fx-font-size: 13px;
+    }
+
+    .material-input {
+        -fx-font-size: 13px;
+    }
+}

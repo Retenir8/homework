@@ -26,9 +26,6 @@ public class Score {
     @JoinColumn(name = "student_id")
     private Student student;
 
-//    @ManyToOne
-//    @JoinColumn(name = "course_id")
-//    private Courses course;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "course_id", nullable = false)
     private Course course;

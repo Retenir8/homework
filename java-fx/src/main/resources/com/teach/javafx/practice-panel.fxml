@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.teach.javafx.controller.PracticeController"
+            style="-fx-background-color: #f5f5f5;"
+            prefWidth="1200" prefHeight="700">
+
+    <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+        <!-- 标题栏和搜索区 -->
+        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: #3f51b5; -fx-padding: 10 15;">
+            <Label text="实习信息管理系统" style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10">
+                <TextField fx:id="practiceIdTextField" promptText="实习编号搜索"
+                           style="-fx-pref-width: 200px; -fx-background-radius: 15; -fx-padding: 3 10;"/>
+                <Button onAction="#onQueryButtonClick" text="查询"
+                        style="-fx-background-color: #ff9800; -fx-text-fill: white; -fx-padding: 3 15; -fx-background-radius: 15;"/>
+            </HBox>
+        </HBox>
+
+        <!-- 操作按钮区 -->
+        <HBox spacing="10" style="-fx-background-color: #e3f2fd; -fx-padding: 8 15; -fx-background-radius: 0 0 8 8;">
+            <Button onAction="#onAddButtonClick" text="添加"
+                    style="-fx-background-radius: 15; -fx-pref-width: 80;"/>
+            <Button onAction="#onEditButtonClick" text="修改"
+                    style="-fx-background-radius: 15; -fx-pref-width: 80;"/>
+            <Button onAction="#onDeleteButtonClick" text="删除"
+                    style="-fx-background-radius: 15; -fx-pref-width: 80;"/>
+        </HBox>
+
+        <!-- 主内容区 - 并排布局 -->
+        <HBox spacing="15" VBox.vgrow="ALWAYS">
+            <!-- 左侧表格区 (60%宽度) -->
+            <VBox style="-fx-background-color: white; -fx-background-radius: 8;" HBox.hgrow="ALWAYS" prefWidth="720">
+                <Label text="实习列表" style="-fx-font-size: 16px; -fx-text-fill: #3f51b5; -fx-font-weight: bold; -fx-padding: 10 15 5 15;"/>
+
+                <TableView fx:id="PracticeTable" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="实习编号" prefWidth="100"/>
+                        <TableColumn fx:id="nameColumn" text="实习公司" prefWidth="150"/>
+                        <TableColumn fx:id="titleColumn" text="实习岗位" prefWidth="120"/>
+                        <TableColumn fx:id="timeColumn" text="实习时间" prefWidth="120"/>
+                        <TableColumn fx:id="studentNameColumn" text="实习人" prefWidth="100"/>
+                        <TableColumn fx:id="genderColumn" text="性别" prefWidth="60"/>
+                    </columns>
+                    <style>
+                        -fx-table-cell-border-color: transparent;
+                        -fx-table-header-border-color: transparent;
+                    </style>
+                </TableView>
+            </VBox>
+
+            <!-- 右侧详细信息区 (40%宽度) - 竖排布局 -->
+            <VBox style="-fx-background-color: white; -fx-background-radius: 8;" prefWidth="480" spacing="10">
+                <Label text="实习详细信息" style="-fx-font-size: 16px; -fx-text-fill: #3f51b5; -fx-font-weight: bold; -fx-padding: 15 15 5 15;"/>
+
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: transparent; -fx-padding: 0 15;">
+                    <VBox spacing="10" style="-fx-padding: 0 10;">
+                        <!-- 实习公司 -->
+                        <VBox spacing="5">
+                            <Label text="实习公司:" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="nameField" style="-fx-pref-width: 400;"/>
+                        </VBox>
+
+                        <!-- 实习岗位 -->
+                        <VBox spacing="5">
+                            <Label text="实习岗位:" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="titleField" style="-fx-pref-width: 400;"/>
+                        </VBox>
+
+                        <!-- 实习时间 -->
+                        <VBox spacing="5">
+                            <Label text="实习时间:" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="timeField" style="-fx-pref-width: 400;"/>
+                        </VBox>
+
+                        <!-- 实习人 -->
+                        <VBox spacing="5">
+                            <Label text="实习人:" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="studentNameField" style="-fx-pref-width: 400;"/>
+                        </VBox>
+
+                        <!-- 性别 -->
+                        <VBox spacing="5">
+                            <Label text="性别:" style="-fx-font-weight: bold;"/>
+                            <ComboBox fx:id="genderComboBox" style="-fx-pref-width: 400;"/>
+                        </VBox>
+
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </HBox>
+    </VBox>
+</AnchorPane>

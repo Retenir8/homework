@@ -1,36 +1,27 @@
 package cn.edu.sdu.java.server.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-
-
-/**
- * Student学生表实体类 保存每个学生的信息，
- * Integer personId 学生表 student 主键 person_id 与Person表主键相同
- * Person person 关联到该用户所用的Person对象，账户所对应的人员信息 person_id 关联 person 表主键 person_id
- * String major 专业
- * String className 班级
- *
- */
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(	name = "student",
-        uniqueConstraints = {
-        })
+@Table(name = "student")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "student_id")
     private Integer studentId;
 
     @ManyToOne
-    @JoinColumn(name="person_id")
+    @JoinColumn(name = "person_id")
     private Person person;
 
     @Size(max = 20)
@@ -39,10 +30,32 @@ public class Student {
     @Size(max = 50)
     private String className;
 
-    // 多对多关联：一个学生可以选修多门课程
-    @Setter
-    @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
-    private Set<Course> courses = new HashSet<>();
+    @Size(max = 20)
+    private String name;
 
+    @Size(max = 20)
+    private String num;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_courses",
+            joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "student_id"), // 明确指定引用 Student 的主键列
+            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "course_id")) // 明确指定引用 Course 的主键列
+    @JsonIgnore
+    private List<Course> courses;
+    @ManyToMany
+    @JoinTable(
+            name = "activity_student",  // 中间表的名称，与 Activity 类中的对应
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "activity_id"))
+    @JsonIgnore
+    private List<Activity> activities;
+
+    @ManyToMany
+    @JoinTable(
+            name = "honor_student",  // 中间表的名称，与 Honor 类中的对应
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "honor_id"))
+    @JsonIgnore
+    private List<Honor> honors;
 }
-//$2a$10$IgSRtR/lS/iHFfH5rh6fUuXKobn/j.caegD2JJQ4vdJggCWuzppDS

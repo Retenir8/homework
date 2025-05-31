@@ -34,6 +34,7 @@ public class LeaveInfoController {
         return leaveInfoService.getAvailableStudents(dataRequest);
     }
 
+    //学生申请
     @PostMapping("/apply")
     @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
     public DataResponse applyLeave( @RequestBody DataRequest dataRequest) {
@@ -47,6 +48,7 @@ public class LeaveInfoController {
         return leaveInfoService.deleteLeave(req);
     }
 
+    //查询自己的记录
     @PostMapping ("/getMyLeaveInfo")
     @PreAuthorize("hasRole('STUDENT') or hasRole('ADMIN')")
     public DataResponse getMyLeaveInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -58,7 +60,7 @@ public class LeaveInfoController {
         return leaveInfoService.getLeaveInfoByUserName(userName);
     }
 
-
+    //多种查询
     @PostMapping("/getLeaveRecords")
     @PreAuthorize("hasRole('TEACHER' or hasRole('ADMIN'))")
     public DataResponse getLeaveRecords(@RequestBody DataRequest req) {
@@ -74,6 +76,8 @@ public class LeaveInfoController {
     public DataResponse getLeaveRecordsByBack() {
         return leaveInfoService.getLeaveRecordsByBack();
     }
+
+    //审批销假功能
     @PostMapping("/updateLeaveInfo")
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public DataResponse updateLeaveInfo(@RequestBody DataRequest req) {

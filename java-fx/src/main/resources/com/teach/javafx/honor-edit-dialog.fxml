@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="600.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.teach.javafx.controller.HonorEditController">
+    <center>
+        <GridPane BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" /> <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" /> <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label text="修改荣誉信息" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER">
+                    <font>
+                        <Font size="28.0" />
+                    </font>
+                </Label>
+
+                <Label text="学生姓名" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="studentNameField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="1" />
+
+                <Label text="荣誉名称" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="honorNameField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+
+                <Label text="获奖时间" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <DatePicker fx:id="timePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="颁奖单位" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="hostField" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+
+                <Label text="级别" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="levelComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="类型" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="typeComboBox" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+
+                <Button fx:id="saveButton" mnemonicParsing="false" text="确定"
+                        GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Button>
+                <Button fx:id="cancelButton" mnemonicParsing="false" text="取消"
+                        GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Button>
+            </children>
+        </GridPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.teach.javafx.controller.ActivitySearchStudentController">
+   <children>
+      <TableView fx:id="resultTableView" layoutY="27.0" prefHeight="345.0" prefWidth="491.0">
+        <columns>
+          <TableColumn prefWidth="236.0" text="姓名" fx:id="StudentName"/>
+          <TableColumn prefWidth="253.60003662109375" text="班级" fx:id="StudentClass"/>
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
